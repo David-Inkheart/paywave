@@ -3,7 +3,6 @@ import { deleteResetToken, getResetToken, storeResetToken } from '../repositorie
 import { hashPassword, comparePasswords } from '../utils/passwordService';
 import { UserId } from '../types/custom';
 import { changePasswordSchema, forgotPasswordSchema, resetPasswordSchema } from '../utils/validators';
-import { sendToQueue } from '../utils/rabbitMQ/producer';
 
 class PasswordController {
   static async changePassword({ userId, currentPassword, newPassword }: { userId: UserId; currentPassword: string; newPassword: string }) {
@@ -77,14 +76,14 @@ class PasswordController {
         };
       }
 
-      try {
-        sendToQueue({ recipientEmail: email, otp: passwordResetToken, purpose: 'password_reset', username: undefined });
-      } catch (err) {
-        return {
-          success: false,
-          error: 'Could not send the password reset code to your email address',
-        };
-      }
+      //   try {
+      //     sendToQueue({ recipientEmail: email, otp: passwordResetToken, purpose: 'password_reset', username: undefined });
+      //   } catch (err) {
+      //     return {
+      //       success: false,
+      //       error: 'Could not send the password reset code to your email address',
+      //     };
+      //   }
       console.log('Password reset code: ', passwordResetToken);
     }
 

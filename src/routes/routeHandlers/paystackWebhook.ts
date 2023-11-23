@@ -1,6 +1,5 @@
 import { RequestHandler } from 'express';
 import hashedAuth from '../../services/paystack/authHash';
-import { sendSlackNotif } from '../../services/slack/slackNotifs';
 
 export const webhookHandler: RequestHandler = async (req, res) => {
   const hash = hashedAuth(req.body);
@@ -20,9 +19,10 @@ export const webhookHandler: RequestHandler = async (req, res) => {
         // response = await reverseTransferDebit(event);
         // response = 'transfer failed, please try again';
       }
-      sendSlackNotif(response);
+      console.log(response);
+      // sendSlackNotif(response);
     } catch (error) {
-      sendSlackNotif(error);
+      // sendSlackNotif(error);
     }
   }
   res.sendStatus(200);
