@@ -7,7 +7,6 @@ import { changePasswordSchema, forgotPasswordSchema, resetPasswordSchema } from 
 class PasswordController {
   static async changePassword({ userId, currentPassword, newPassword }: { userId: UserId; currentPassword: string; newPassword: string }) {
     try {
-      // validate the request body
       const { error } = changePasswordSchema.validate({ currentPassword, newPassword });
 
       if (error) {
