@@ -2,8 +2,8 @@ import jwt from 'jsonwebtoken';
 import { hashPassword, comparePasswords } from '../utils/passwordService';
 import { registerSchema, loginSchema } from '../utils/validators';
 import { createUser, findUser } from '../repositories/db.user';
-// import { sendEmail } from '../services/email/email';
-import { sendToQueue } from '../utils/rabbitMQ/producer';
+import { sendEmail } from '../services/email/email';
+// import { sendToQueue } from '../utils/rabbitMQ/producer';
 
 class AuthController {
   static async register({
@@ -59,6 +59,15 @@ class AuthController {
       expiresIn: '1h',
     });
 
+    // send welcome email
+    const sendmail = await sendEmail({
+      recipientEmail: newUser.email,
+      username: businessName,
+      purpose: 'welcome',
+    });
+
+    console.log(sendmail);
+
     return {
       success: true,
       message: 'User registered successfully',
@@ -100,15 +109,15 @@ class AuthController {
 
     // send welcome email
 
-    await sendToQueue({ recipientEmail: email, purpose: 'welcome', username: `${user.firstName} ${user.lastName}`, otp: undefined });
+    // await sendToQueue({ recipientEmail: email, purpose: 'welcome', username: `${user.firstName} ${user.lastName}`, otp: undefined });
 
-    // const sendmail = await sendEmail({
-    //   recipientEmail: user.email,
-    //   username: `${user.firstName} ${user.lastName}`,
-    //   purpose: 'welcome',
-    // });
+    const sendmail = await sendEmail({
+      recipientEmail: user.email,
+      username: `${user.firstName} ${user.lastName}`,
+      purpose: 'welcome',
+    });
 
-    // console.log(sendmail);
+    console.log(sendmail);
 
     return {
       success: true,
