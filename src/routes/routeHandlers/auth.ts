@@ -29,6 +29,7 @@ export const loginHandler: RequestHandler = async (req, res) => {
       data: { token: response.token },
     });
   } catch (err) {
+    console.log(err);
     return res.status(500).json({
       success: false,
       error: 'Internal server error',
@@ -97,6 +98,7 @@ export const changePasswordHandler: RequestHandler = async (req, res) => {
       message: response.message,
     });
   } catch (err) {
+    console.log(err);
     return res.status(500).json({
       success: false,
       error: 'Internal server error',
