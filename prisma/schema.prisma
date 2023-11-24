@@ -1,5 +1,5 @@
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
   binaryTargets = ["native", "rhel-openssl-1.0.x"]
 }
 
@@ -9,75 +9,102 @@ datasource db {
 }
 
 model User {
-  id          Int       @id @default(autoincrement())
-  firstName   String
-  lastName    String
-  email       String    @unique
-  password    String
-  phoneNumber String    @unique
-  createdAt   DateTime  @default(now()) @db.Timestamptz(3)
-  businessAccounts    BusinessAccount[]
+  id               Int               @id @default(autoincrement())
+  firstName        String
+  lastName         String
+  email            String            @unique
+  password         String
+  phoneNumber      String            @unique
+  createdAt        DateTime          @default(now()) @db.Timestamptz(3)
+  businessAccounts BusinessAccount[]
 }
 
 model BusinessAccount {
-  id           Int           @id @default(autoincrement())
-  userId       Int
-  businessName String        @unique
-  accountName  String?
-  accountNumber String?      @unique
-  bankCode     Int?
+  id            Int        @id @default(autoincrement())
+  userId        Int
+  businessName  String     @unique
+  accountName   String?
+  accountNumber String?    @unique
+  bankCode      String?
   streetAddress String?
-  city         String?
-  country      Country?
-  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
-  balance      Decimal       @default(0)
-  createdAt    DateTime      @default(now()) @db.Timestamptz(3)
-  // transactions Transaction[]
+  city          String?
+  country       Country?
+  user          User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  balance       Decimal    @default(0)
+  createdAt     DateTime   @default(now()) @db.Timestamptz(3)
+  customers     Customer[]
+  transactions Transaction[]
+  invoices       Invoice[]
 }
 
-// model Transaction {
-//   id                   Int                @id @default(autoincrement())
-//   businessAccountId            Int
-//   businessAccount              BusinessAccount            @relation(fields: [businessAccountId], references: [id])
-//   reference            String
-//   amount               Decimal
-//   bal_before           Decimal
-//   bal_after            Decimal
-//   type                 TransactionType
-//   subType              TransactionSubType @relation(fields: [transactionSubTypeId], references: [id])
-//   createdAt            DateTime           @default(now()) @db.Timestamptz(3)
-//   metadata             Json?
-//   transactionSubTypeId Int
-// }
+model Customer {
+  id                Int             @id @default(autoincrement())
+  name              String
+  email             String          @unique
+  businessAccountId Int
+  invoices          Invoice[]
+  businessAccount   BusinessAccount @relation(fields: [businessAccountId], references: [id])
+  createdAt         DateTime        @default(now()) @db.Timestamptz(3)
+  updatedAt         DateTime        @updatedAt @db.Timestamptz(3)
+  transactions Transaction[]
+}
 
-// model TransactionSubType {
-//   id          Int           @id @default(autoincrement())
-//   name        String
-//   createdAt   DateTime      @default(now()) @db.Timestamptz(3)
-//   updatedAt   DateTime      @updatedAt @db.Timestamptz(3)
-//   Transaction Transaction[]
-// }
+model Invoice {
+  id                Int             @id @default(autoincrement())
+  businessAccountId Int
+  customerId        Int?
+  totalAmount            Decimal
+  createdAt         DateTime        @default(now()) @db.Timestamptz(3)
+  updatedAt         DateTime        @updatedAt @db.Timestamptz(3)
+  paymentDueDate    DateTime
+  businessAccount   BusinessAccount @relation(fields: [businessAccountId], references: [id])
+  Customer          Customer?       @relation(fields: [customerId], references: [id])
+  items             Item[]
+  paymentStatus     PaymentStatus   @default(PENDING)
+  reference         String?
+}
 
-// model TransferAttempt {
-//   id             Int      @id @default(autoincrement())
-//   sender_acc_id  Int
-//   account_name   String
-//   account_number String
-//   bank_code      String
-//   recipient_code String
-//   reference      String   @unique
-//   createdAt      DateTime @default(now()) @db.Timestamptz(3)
-//   updatedAt      DateTime @updatedAt @db.Timestamptz(3)
-// }
+model Item {
+  id          Int      @id @default(autoincrement())
+  name        String
+  description String?
+  price       Decimal
+  quantity    Int
+  invoiceId   Int
+  createdAt   DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt   DateTime @updatedAt @db.Timestamptz(3)
+  invoice     Invoice  @relation(fields: [invoiceId], references: [id])
+}
 
-// enum TransactionType {
-//   DEBIT
-//   CREDIT
-// }
+model Transaction {
+  id                Int             @id @default(autoincrement())
+  businessAccountId Int
+  customerId        Int?
+  invoiceId         Int?
+  amount            Decimal
+  createdAt         DateTime        @default(now()) @db.Timestamptz(3)
+  updatedAt         DateTime        @updatedAt @db.Timestamptz(3)
+  reference         String?
+  businessAccount   BusinessAccount @relation(fields: [businessAccountId], references: [id])
+  Customer          Customer?       @relation(fields: [customerId], references: [id])
+  metadata          Json?
+  transactionType   TransactionType
+}
 
 enum Country {
   Nigeria
   Ghana
   Kenya
   Uganda
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  FAILED
+}
+
+enum TransactionType {
+  card
+  bankTransfer
 }

@@ -86,7 +86,7 @@ class BusinessDetailsController {
     accountName,
   }: {
     userId: UserId;
-    bankCode: number;
+    bankCode: string;
     accountNumber: string;
     accountName: string;
   }) {
@@ -116,7 +116,6 @@ class BusinessDetailsController {
         message: 'Payment details updated successfully',
       };
     } catch (error) {
-      console.log(error);
       return {
         success: false,
         error: 'Could not update payment details, please try again later',

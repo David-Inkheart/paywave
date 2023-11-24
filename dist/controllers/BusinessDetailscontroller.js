@@ -82,7 +82,6 @@ class BusinessDetailsController {
             };
         }
         catch (error) {
-            console.log(error);
             return {
                 success: false,
                 error: 'Could not update payment details, please try again later',

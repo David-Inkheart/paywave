@@ -63,7 +63,7 @@ export const updateBusinessDetailsHandler: RequestHandler = async (req, res) => 
 export const updatePaymentDetailsHandler: RequestHandler = async (req, res) => {
   try {
     const userId = req.userId as UserId;
-    const bankCode = parseInt(req.body.bankCode, 10) as number;
+    const bankCode = req.body.bankCode as string;
     const accountNumber = req.body.accountNumber as string;
     const accountName = req.body.accountName as string;
 

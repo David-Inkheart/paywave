@@ -61,7 +61,7 @@ exports.updateBusinessDetailsHandler = updateBusinessDetailsHandler;
 const updatePaymentDetailsHandler = async (req, res) => {
     try {
         const userId = req.userId;
-        const bankCode = parseInt(req.body.bankCode, 10);
+        const bankCode = req.body.bankCode;
         const accountNumber = req.body.accountNumber;
         const accountName = req.body.accountName;
         const response = await BusinessDetailscontroller_1.default.updatePaymentDetails({
