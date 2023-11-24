@@ -105,3 +105,65 @@ export const changePasswordHandler: RequestHandler = async (req, res) => {
     });
   }
 };
+
+export const resetPasswordHandler: RequestHandler = async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    const response = await PasswordController.resetPassword(email);
+
+    if (!response.success) {
+      if (response.error?.includes('not found')) {
+        return res.status(404).json({
+          success: false,
+          error: response.error,
+        });
+      }
+      return res.status(400).json({
+        success: false,
+        error: response.error,
+      });
+    }
+
+    return res.json({
+      success: response.success,
+      message: response.message,
+    });
+  } catch (err) {
+    return res.status(500).json({
+      success: false,
+      error: 'Internal server error',
+    });
+  }
+};
+
+export const confirmResetPasswordHandler: RequestHandler = async (req, res) => {
+  try {
+    const { email, code, newPassword } = req.body;
+
+    const response = await PasswordController.confirmResetPassword(email, code, newPassword);
+
+    if (!response.success) {
+      if (response.error?.includes('not found')) {
+        return res.status(404).json({
+          success: false,
+          error: response.error,
+        });
+      }
+      return res.status(400).json({
+        success: false,
+        error: response.error,
+      });
+    }
+
+    return res.json({
+      success: response.success,
+      message: response.message,
+    });
+  } catch (err) {
+    return res.status(500).json({
+      success: false,
+      error: 'Internal server error',
+    });
+  }
+};

@@ -64,6 +64,7 @@ class AuthController {
       recipientEmail: newUser.email,
       businessName,
       purpose: 'welcome',
+      otp: undefined,
     });
 
     return {
@@ -112,6 +113,7 @@ class AuthController {
       recipientEmail: user.email,
       businessName: businessAccount!.businessName,
       purpose: 'welcome',
+      otp: undefined,
     });
 
     return {

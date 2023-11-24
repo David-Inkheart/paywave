@@ -22,6 +22,8 @@ const router = express_1.default.Router();
 router.get('/', home_1.getHomeHandler);
 router.post('/auth/register', auth_1.registerHandler);
 router.post('/auth/login', auth_1.loginHandler);
+router.post('/auth/reset-password', auth_1.resetPasswordHandler);
+router.post('/auth/reset-password/confirm', auth_1.confirmResetPasswordHandler);
 // router.post('/paystack-webhook', webhookHandler);
 // router.get('/verify-transaction', verifyTransHandler);
 // router.delete('/delete-recipient', deleteRecipientHandler);

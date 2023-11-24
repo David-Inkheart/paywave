@@ -3,6 +3,8 @@ import { deleteResetToken, getResetToken, storeResetToken } from '../repositorie
 import { hashPassword, comparePasswords } from '../utils/passwordService';
 import { UserId } from '../types/custom';
 import { changePasswordSchema, forgotPasswordSchema, resetPasswordSchema } from '../utils/validators';
+import { sendEmail } from '../services/email/email';
+import { findbusinessAccount } from '../repositories/db.account';
 
 class PasswordController {
   static async changePassword({ userId, currentPassword, newPassword }: { userId: UserId; currentPassword: string; newPassword: string }) {
@@ -75,14 +77,17 @@ class PasswordController {
         };
       }
 
-      //   try {
-      //     sendToQueue({ recipientEmail: email, otp: passwordResetToken, purpose: 'password_reset', username: undefined });
-      //   } catch (err) {
-      //     return {
-      //       success: false,
-      //       error: 'Could not send the password reset code to your email address',
-      //     };
-      //   }
+      // get the user's business name
+      const businessAccount = await findbusinessAccount({ userId: existingUser.id });
+
+      // send the code to the user's email address
+      await sendEmail({
+        recipientEmail: existingUser.email,
+        otp: passwordResetToken,
+        purpose: 'reset',
+        businessName: businessAccount!.businessName,
+      });
+
       console.log('Password reset code: ', passwordResetToken);
     }
 

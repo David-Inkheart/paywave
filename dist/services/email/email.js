@@ -14,18 +14,18 @@ const transporter = nodemailer_1.default.createTransport({
         pass: process.env.EMAIL_APP_PASSWORD,
     },
 });
-const selectTemplateFromPurpose = ({ purpose, businessName }) => {
+const selectTemplateFromPurpose = ({ purpose, businessName, otp }) => {
     if (purpose === 'welcome') {
         return pug_1.default.renderFile(`${process.cwd()}/templates/welcome.pug`, { businessName });
     }
-    return pug_1.default.renderFile(`${process.cwd()}/templates/resetPassword.pug`, { businessName });
+    return pug_1.default.renderFile(`${process.cwd()}/templates/resetPassword.pug`, { businessName, otp });
 };
-const sendEmail = async ({ recipientEmail, purpose, businessName }) => {
+const sendEmail = async ({ recipientEmail, purpose, businessName, otp, }) => {
     return transporter.sendMail({
         from: `"paywave" <${process.env.EMAIL}>`, // sender address
         to: recipientEmail, // list of receivers
         subject: purpose === 'welcome' ? 'Welcome to paywave' : 'Password Reset Confirmation', // Subject line
-        html: selectTemplateFromPurpose({ businessName, purpose }), // html body
+        html: selectTemplateFromPurpose({ businessName, purpose, otp }), // html body
     });
 };
 exports.sendEmail = sendEmail;

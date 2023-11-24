@@ -4,6 +4,8 @@ const db_user_1 = require("../repositories/db.user");
 const redis_user_1 = require("../repositories/redis.user");
 const passwordService_1 = require("../utils/passwordService");
 const validators_1 = require("../utils/validators");
+const email_1 = require("../services/email/email");
+const db_account_1 = require("../repositories/db.account");
 class PasswordController {
     static async changePassword({ userId, currentPassword, newPassword }) {
         try {
@@ -64,14 +66,15 @@ class PasswordController {
                     error: 'Could not cache the password reset token',
                 };
             }
-            //   try {
-            //     sendToQueue({ recipientEmail: email, otp: passwordResetToken, purpose: 'password_reset', username: undefined });
-            //   } catch (err) {
-            //     return {
-            //       success: false,
-            //       error: 'Could not send the password reset code to your email address',
-            //     };
-            //   }
+            // get the user's business name
+            const businessAccount = await (0, db_account_1.findbusinessAccount)({ userId: existingUser.id });
+            // send the code to the user's email address
+            await (0, email_1.sendEmail)({
+                recipientEmail: existingUser.email,
+                otp: passwordResetToken,
+                purpose: 'reset',
+                businessName: businessAccount.businessName,
+            });
             console.log('Password reset code: ', passwordResetToken);
         }
         return {
