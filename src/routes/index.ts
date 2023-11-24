@@ -17,10 +17,10 @@ import { getHomeHandler } from './routeHandlers/home';
 const router = express.Router();
 
 router.get('/', getHomeHandler);
-router.post('/auth/register', registerHandler);
-router.post('/auth/login', loginHandler);
-router.post('/auth/reset-password', resetPasswordHandler);
-router.post('/auth/reset-password/confirm', confirmResetPasswordHandler);
+router.post('/register', registerHandler);
+router.post('/login', loginHandler);
+router.post('/reset-password', resetPasswordHandler);
+router.post('/reset-password/confirm', confirmResetPasswordHandler);
 
 // router.post('/paystack-webhook', webhookHandler);
 // router.get('/verify-transaction', verifyTransHandler);
