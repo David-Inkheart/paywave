@@ -3,6 +3,7 @@ import { hashPassword, comparePasswords } from '../utils/passwordService';
 import { registerSchema, loginSchema } from '../utils/validators';
 import { createUser, findUser } from '../repositories/db.user';
 import { sendEmail } from '../services/email/email';
+import { findbusinessAccount } from '../repositories/db.account';
 
 class AuthController {
   static async register({
@@ -61,7 +62,7 @@ class AuthController {
     // send welcome email
     await sendEmail({
       recipientEmail: newUser.email,
-      username: businessName,
+      businessName,
       purpose: 'welcome',
     });
 
@@ -104,9 +105,12 @@ class AuthController {
       expiresIn: '1h',
     });
 
+    // find businessAccount
+    const businessAccount = await findbusinessAccount({ userId: user.id });
+
     await sendEmail({
       recipientEmail: user.email,
-      username: `${user.firstName} ${user.lastName}`,
+      businessName: businessAccount!.businessName,
       purpose: 'welcome',
     });
 

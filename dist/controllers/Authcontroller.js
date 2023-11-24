@@ -8,6 +8,7 @@ const passwordService_1 = require("../utils/passwordService");
 const validators_1 = require("../utils/validators");
 const db_user_1 = require("../repositories/db.user");
 const email_1 = require("../services/email/email");
+const db_account_1 = require("../repositories/db.account");
 class AuthController {
     static async register({ firstName, lastName, businessName, phoneNumber, email, password, }) {
         // validate user input
@@ -43,7 +44,7 @@ class AuthController {
         // send welcome email
         await (0, email_1.sendEmail)({
             recipientEmail: newUser.email,
-            username: businessName,
+            businessName,
             purpose: 'welcome',
         });
         return {
@@ -81,9 +82,11 @@ class AuthController {
         const token = jsonwebtoken_1.default.sign({ userId: user.id }, process.env.JWT_SECRET, {
             expiresIn: '1h',
         });
+        // find businessAccount
+        const businessAccount = await (0, db_account_1.findbusinessAccount)({ userId: user.id });
         await (0, email_1.sendEmail)({
             recipientEmail: user.email,
-            username: `${user.firstName} ${user.lastName}`,
+            businessName: businessAccount.businessName,
             purpose: 'welcome',
         });
         return {
