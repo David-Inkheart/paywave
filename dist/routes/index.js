@@ -29,8 +29,8 @@ router.post('/auth/reset-password/confirm', auth_1.confirmResetPasswordHandler);
 // router.delete('/delete-recipient', deleteRecipientHandler);
 // router.get('/banks', listBanksHandler);
 // use auth middleware to protect the routes below
-router.use(authMiddleware_1.default);
-router.post('/auth/change-password', auth_1.changePasswordHandler);
+// router.use(authMiddleware);
+router.post('/auth/change-password', authMiddleware_1.default, auth_1.changePasswordHandler);
 // router.post('/transfer/:recipientId', transferTransactionHandler);
 // router.get('/transactions', getTransactionsHandler);
 // router.post('/fund', fundAccountHandler);
