@@ -17,10 +17,10 @@ import { getHomeHandler } from './routeHandlers/home';
 const router = express.Router();
 
 router.get('/', getHomeHandler);
-router.post('/register', registerHandler);
-router.post('/login', loginHandler);
-router.post('/reset-password', resetPasswordHandler);
-router.post('/reset-password/confirm', confirmResetPasswordHandler);
+router.post('/auth/register', registerHandler);
+router.post('/auth/login', loginHandler);
+router.post('/auth/reset-password', resetPasswordHandler);
+router.post('/auth/reset-password/confirm', confirmResetPasswordHandler);
 
 // router.post('/paystack-webhook', webhookHandler);
 // router.get('/verify-transaction', verifyTransHandler);
@@ -28,8 +28,8 @@ router.post('/reset-password/confirm', confirmResetPasswordHandler);
 // router.get('/banks', listBanksHandler);
 
 // use auth middleware to protect the routes below
-router.use(authMiddleware);
-router.post('/auth/change-password', changePasswordHandler);
+// router.use(authMiddleware);
+router.post('/auth/change-password', authMiddleware, changePasswordHandler);
 // router.post('/transfer/:recipientId', transferTransactionHandler);
 // router.get('/transactions', getTransactionsHandler);
 // router.post('/fund', fundAccountHandler);
