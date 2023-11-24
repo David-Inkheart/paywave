@@ -36,23 +36,17 @@ const resetPasswordSchema = joi.object({
   code: joi.string().required().length(5),
 });
 
-const transferMoneySchema = joi.object({
-  amount: joi.number().positive().required(),
-  recipientId: idSchema,
-  senderId: idSchema,
+const businessDetailsSchema = joi.object({
+  businessName: joi.string().min(3).max(20).required(),
+  streetAddress: joi.string().min(3).max(30).required(),
+  city: joi.string().min(3).max(20).required(),
+  country: joi.string().valid('Nigeria', 'Ghana', 'Kenya', 'Uganda').required(),
 });
 
-const fundSchema = joi.object({
-  amount: joi.number().integer().min(100).required(),
-  userId: idSchema,
-});
-
-const withdrawSchema = joi.object({
-  accountNumber: joi.number().integer().min(10).required(),
-  bankCode: joi.number().integer().min(3).required(),
-  amount: joi.number().integer().min(10000).required(),
-  narration: joi.string().required(),
-  userId: idSchema,
+const paymentDetailsSchema = joi.object({
+  bankCode: joi.number().integer().min(1).required(),
+  accountNumber: joi.string().min(10).max(10).required(),
+  accountName: joi.string().min(3).max(30).required(),
 });
 
 const transactionHistorySchema = joi
@@ -67,15 +61,6 @@ const transactionHistorySchema = joi
   .with('limit', 'page')
   .with('startDate', 'endDate');
 
-const verifyPaySchema = joi.object({
-  reference: joi.string().uuid().required(),
-});
-
-const deleteRecipientSchema = joi.object({
-  // RCP_2x5j67tnnw1t98k
-  recipientCode: joi.string().min(19).max(20).required(),
-});
-
 export {
   loginSchema,
   registerSchema,
@@ -83,10 +68,7 @@ export {
   forgotPasswordSchema,
   resetPasswordSchema,
   idSchema,
-  transferMoneySchema,
   transactionHistorySchema,
-  fundSchema,
-  verifyPaySchema,
-  withdrawSchema,
-  deleteRecipientSchema,
+  businessDetailsSchema,
+  paymentDetailsSchema,
 };

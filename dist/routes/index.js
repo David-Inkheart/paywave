@@ -8,6 +8,7 @@ const express_1 = __importDefault(require("express"));
 const authMiddleware_1 = __importDefault(require("../middleWares/authMiddleware"));
 const auth_1 = require("./routeHandlers/auth");
 const home_1 = require("./routeHandlers/home");
+const businessProfile_1 = require("./routeHandlers/businessProfile");
 // import { webhookHandler } from './routeHandlers/paystackWebhook';
 // import {
 //   deleteRecipientHandler,
@@ -31,6 +32,9 @@ router.post('/auth/reset-password/confirm', auth_1.confirmResetPasswordHandler);
 // use auth middleware to protect the routes below
 // router.use(authMiddleware);
 router.post('/auth/change-password', authMiddleware_1.default, auth_1.changePasswordHandler);
+router.get('/business-info', authMiddleware_1.default, businessProfile_1.getBusinessDetailsHandler);
+router.post('/update-business-info', authMiddleware_1.default, businessProfile_1.updateBusinessDetailsHandler);
+router.post('/update-payment-info', authMiddleware_1.default, businessProfile_1.updatePaymentDetailsHandler);
 // router.post('/transfer/:recipientId', transferTransactionHandler);
 // router.get('/transactions', getTransactionsHandler);
 // router.post('/fund', fundAccountHandler);

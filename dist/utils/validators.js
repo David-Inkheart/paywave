@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteRecipientSchema = exports.withdrawSchema = exports.verifyPaySchema = exports.fundSchema = exports.transactionHistorySchema = exports.transferMoneySchema = exports.idSchema = exports.resetPasswordSchema = exports.forgotPasswordSchema = exports.changePasswordSchema = exports.registerSchema = exports.loginSchema = void 0;
+exports.paymentDetailsSchema = exports.businessDetailsSchema = exports.transactionHistorySchema = exports.idSchema = exports.resetPasswordSchema = exports.forgotPasswordSchema = exports.changePasswordSchema = exports.registerSchema = exports.loginSchema = void 0;
 const joi_1 = __importDefault(require("joi"));
 const registerSchema = joi_1.default.object({
     firstName: joi_1.default.string().min(3).max(20).alphanum().required(),
@@ -41,25 +41,19 @@ const resetPasswordSchema = joi_1.default.object({
     code: joi_1.default.string().required().length(5),
 });
 exports.resetPasswordSchema = resetPasswordSchema;
-const transferMoneySchema = joi_1.default.object({
-    amount: joi_1.default.number().positive().required(),
-    recipientId: idSchema,
-    senderId: idSchema,
+const businessDetailsSchema = joi_1.default.object({
+    businessName: joi_1.default.string().min(3).max(20).required(),
+    streetAddress: joi_1.default.string().min(3).max(30).required(),
+    city: joi_1.default.string().min(3).max(20).required(),
+    country: joi_1.default.string().valid('Nigeria', 'Ghana', 'Kenya', 'Uganda').required(),
 });
-exports.transferMoneySchema = transferMoneySchema;
-const fundSchema = joi_1.default.object({
-    amount: joi_1.default.number().integer().min(100).required(),
-    userId: idSchema,
+exports.businessDetailsSchema = businessDetailsSchema;
+const paymentDetailsSchema = joi_1.default.object({
+    bankCode: joi_1.default.number().integer().min(1).required(),
+    accountNumber: joi_1.default.string().min(10).max(10).required(),
+    accountName: joi_1.default.string().min(3).max(30).required(),
 });
-exports.fundSchema = fundSchema;
-const withdrawSchema = joi_1.default.object({
-    accountNumber: joi_1.default.number().integer().min(10).required(),
-    bankCode: joi_1.default.number().integer().min(3).required(),
-    amount: joi_1.default.number().integer().min(10000).required(),
-    narration: joi_1.default.string().required(),
-    userId: idSchema,
-});
-exports.withdrawSchema = withdrawSchema;
+exports.paymentDetailsSchema = paymentDetailsSchema;
 const transactionHistorySchema = joi_1.default
     .object({
     limit: joi_1.default.number().integer().min(1),
@@ -72,13 +66,4 @@ const transactionHistorySchema = joi_1.default
     .with('limit', 'page')
     .with('startDate', 'endDate');
 exports.transactionHistorySchema = transactionHistorySchema;
-const verifyPaySchema = joi_1.default.object({
-    reference: joi_1.default.string().uuid().required(),
-});
-exports.verifyPaySchema = verifyPaySchema;
-const deleteRecipientSchema = joi_1.default.object({
-    // RCP_2x5j67tnnw1t98k
-    recipientCode: joi_1.default.string().min(19).max(20).required(),
-});
-exports.deleteRecipientSchema = deleteRecipientSchema;
 //# sourceMappingURL=validators.js.map

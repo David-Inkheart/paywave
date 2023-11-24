@@ -3,6 +3,7 @@ import express from 'express';
 import authMiddleware from '../middleWares/authMiddleware';
 import { changePasswordHandler, confirmResetPasswordHandler, loginHandler, registerHandler, resetPasswordHandler } from './routeHandlers/auth';
 import { getHomeHandler } from './routeHandlers/home';
+import { getBusinessDetailsHandler, updateBusinessDetailsHandler, updatePaymentDetailsHandler } from './routeHandlers/businessProfile';
 // import { webhookHandler } from './routeHandlers/paystackWebhook';
 // import {
 //   deleteRecipientHandler,
@@ -30,6 +31,9 @@ router.post('/auth/reset-password/confirm', confirmResetPasswordHandler);
 // use auth middleware to protect the routes below
 // router.use(authMiddleware);
 router.post('/auth/change-password', authMiddleware, changePasswordHandler);
+router.get('/business-info', authMiddleware, getBusinessDetailsHandler);
+router.post('/update-business-info', authMiddleware, updateBusinessDetailsHandler);
+router.post('/update-payment-info', authMiddleware, updatePaymentDetailsHandler);
 // router.post('/transfer/:recipientId', transferTransactionHandler);
 // router.get('/transactions', getTransactionsHandler);
 // router.post('/fund', fundAccountHandler);

@@ -23,6 +23,12 @@ model BusinessAccount {
   id           Int           @id @default(autoincrement())
   userId       Int
   businessName String        @unique
+  accountName  String?
+  accountNumber String?      @unique
+  bankCode     Int?
+  streetAddress String?
+  city         String?
+  country      Country?
   user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
   balance      Decimal       @default(0)
   createdAt    DateTime      @default(now()) @db.Timestamptz(3)
@@ -68,3 +74,10 @@ model BusinessAccount {
 //   DEBIT
 //   CREDIT
 // }
+
+enum Country {
+  Nigeria
+  Ghana
+  Kenya
+  Uganda
+}

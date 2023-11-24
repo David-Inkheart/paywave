@@ -11,6 +11,10 @@ export const findbusinessAccountbyUserId = (userId: number, txn?: Prisma.Transac
     : prisma.$queryRaw<BusinessAccount[]>(Prisma.sql`SELECT * FROM "public"."businessAccount" WHERE "userId" = ${userId} FOR UPDATE;`);
 };
 
+export const updatebusinessAccount = (id: number, data: Prisma.BusinessAccountUpdateInput) => {
+  return prisma.businessAccount.update({ where: { id }, data });
+};
+
 export const debitbusinessAccount = ({
   amount,
   businessAccountId,
