@@ -1,5 +1,4 @@
 import { RequestHandler } from 'express';
-
 import { UserId } from '../../types/custom';
 import BusinessDetailsController from '../../controllers/BusinessDetailscontroller';
 

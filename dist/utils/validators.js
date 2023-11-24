@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.paymentDetailsSchema = exports.businessDetailsSchema = exports.transactionHistorySchema = exports.idSchema = exports.resetPasswordSchema = exports.forgotPasswordSchema = exports.changePasswordSchema = exports.registerSchema = exports.loginSchema = void 0;
+exports.customerEmailSchema = exports.customerDetailSchema = exports.paymentDetailsSchema = exports.businessDetailsSchema = exports.transactionHistorySchema = exports.idSchema = exports.resetPasswordSchema = exports.forgotPasswordSchema = exports.changePasswordSchema = exports.registerSchema = exports.loginSchema = void 0;
 const joi_1 = __importDefault(require("joi"));
 const registerSchema = joi_1.default.object({
     firstName: joi_1.default.string().min(3).max(20).alphanum().required(),
@@ -54,6 +54,15 @@ const paymentDetailsSchema = joi_1.default.object({
     accountName: joi_1.default.string().min(3).max(30).required(),
 });
 exports.paymentDetailsSchema = paymentDetailsSchema;
+const customerDetailSchema = joi_1.default.object({
+    customerName: joi_1.default.string().min(3).max(30).required(),
+    customerEmail: joi_1.default.string().email().required(),
+});
+exports.customerDetailSchema = customerDetailSchema;
+const customerEmailSchema = joi_1.default.object({
+    customerEmail: joi_1.default.string().email().required(),
+});
+exports.customerEmailSchema = customerEmailSchema;
 const transactionHistorySchema = joi_1.default
     .object({
     limit: joi_1.default.number().integer().min(1),

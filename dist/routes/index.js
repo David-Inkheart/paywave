@@ -9,35 +9,24 @@ const authMiddleware_1 = __importDefault(require("../middleWares/authMiddleware"
 const auth_1 = require("./routeHandlers/auth");
 const home_1 = require("./routeHandlers/home");
 const businessProfile_1 = require("./routeHandlers/businessProfile");
-// import { webhookHandler } from './routeHandlers/paystackWebhook';
-// import {
-//   deleteRecipientHandler,
-//   fundAccountHandler,
-//   getTransactionsHandler,
-//   listBanksHandler,
-//   transferTransactionHandler,
-//   verifyTransHandler,
-//   withdrawalHandler,
-// } from './routeHandlers/transaction';
+const customer_1 = require("./routeHandlers/customer");
 const router = express_1.default.Router();
 router.get('/', home_1.getHomeHandler);
 router.post('/auth/register', auth_1.registerHandler);
 router.post('/auth/login', auth_1.loginHandler);
 router.post('/auth/reset-password', auth_1.resetPasswordHandler);
 router.post('/auth/reset-password/confirm', auth_1.confirmResetPasswordHandler);
-// router.post('/paystack-webhook', webhookHandler);
-// router.get('/verify-transaction', verifyTransHandler);
-// router.delete('/delete-recipient', deleteRecipientHandler);
-// router.get('/banks', listBanksHandler);
-// use auth middleware to protect the routes below
 // router.use(authMiddleware);
 router.post('/auth/change-password', authMiddleware_1.default, auth_1.changePasswordHandler);
+// business profile routes
 router.get('/business-info', authMiddleware_1.default, businessProfile_1.getBusinessDetailsHandler);
 router.post('/update-business-info', authMiddleware_1.default, businessProfile_1.updateBusinessDetailsHandler);
 router.post('/update-payment-info', authMiddleware_1.default, businessProfile_1.updatePaymentDetailsHandler);
-// router.post('/transfer/:recipientId', transferTransactionHandler);
-// router.get('/transactions', getTransactionsHandler);
-// router.post('/fund', fundAccountHandler);
-// router.post('/withdraw', withdrawalHandler);
+// customer routes
+router.get('/customer', authMiddleware_1.default, customer_1.getCustomerHandler);
+router.get('/allCustomers', authMiddleware_1.default, customer_1.getAllCustomersHandler);
+router.post('/update-customer', authMiddleware_1.default, customer_1.updateCustomerHandler);
+router.delete('/delete-customer', authMiddleware_1.default, customer_1.deleteCustomerHandler);
+router.post('/create-customer', authMiddleware_1.default, customer_1.createCustomerHandler);
 exports.default = router;
 //# sourceMappingURL=index.js.map

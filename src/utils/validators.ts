@@ -49,6 +49,15 @@ const paymentDetailsSchema = joi.object({
   accountName: joi.string().min(3).max(30).required(),
 });
 
+const customerDetailSchema = joi.object({
+  customerName: joi.string().min(3).max(30).required(),
+  customerEmail: joi.string().email().required(),
+});
+
+const customerEmailSchema = joi.object({
+  customerEmail: joi.string().email().required(),
+});
+
 const transactionHistorySchema = joi
   .object({
     limit: joi.number().integer().min(1),
@@ -71,4 +80,6 @@ export {
   transactionHistorySchema,
   businessDetailsSchema,
   paymentDetailsSchema,
+  customerDetailSchema,
+  customerEmailSchema,
 };
