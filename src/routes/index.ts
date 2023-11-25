@@ -11,7 +11,7 @@ import {
   getCustomerHandler,
   updateCustomerHandler,
 } from './routeHandlers/customer';
-import { createInvoiceHandler } from './routeHandlers/invoice';
+import { createInvoiceHandler, getAllInvoicesHandler, getInvoiceHandler } from './routeHandlers/invoice';
 
 const router = express.Router();
 
@@ -38,5 +38,7 @@ router.post('/create-customer', authMiddleware, createCustomerHandler);
 
 // invoice routes
 router.post('/create-invoice/:customerId', authMiddleware, createInvoiceHandler);
+router.get('/invoice/:invoiceId', authMiddleware, getInvoiceHandler);
+router.get('/all-invoices', authMiddleware, getAllInvoicesHandler);
 
 export default router;

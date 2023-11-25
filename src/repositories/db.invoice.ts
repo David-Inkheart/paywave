@@ -30,3 +30,17 @@ export const createInvoice = ({
     },
   });
 };
+
+export const getInvoice = (id: number) => {
+  return prisma.invoice.findUnique({
+    where: { id },
+    include: { items: true },
+  });
+};
+
+export const getAllInvoices = (businessAccountId: number) => {
+  return prisma.invoice.findMany({
+    where: { businessAccountId },
+    include: { items: true },
+  });
+};

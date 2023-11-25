@@ -31,5 +31,7 @@ router.delete('/delete-customer', authMiddleware_1.default, customer_1.deleteCus
 router.post('/create-customer', authMiddleware_1.default, customer_1.createCustomerHandler);
 // invoice routes
 router.post('/create-invoice/:customerId', authMiddleware_1.default, invoice_1.createInvoiceHandler);
+router.get('/invoice/:invoiceId', authMiddleware_1.default, invoice_1.getInvoiceHandler);
+router.get('/all-invoices', authMiddleware_1.default, invoice_1.getAllInvoicesHandler);
 exports.default = router;
 //# sourceMappingURL=index.js.map

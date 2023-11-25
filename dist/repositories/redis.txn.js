@@ -5,7 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getTxnArgs = exports.storeTxnArgs = void 0;
 const redisClient_1 = __importDefault(require("../redisClient"));
-const storeTxnArgs = (key, value) => redisClient_1.default.setEx(key, 30, value);
+const storeTxnArgs = (key, value) => redisClient_1.default.setEx(key, 60, value);
 exports.storeTxnArgs = storeTxnArgs;
 const getTxnArgs = (key) => redisClient_1.default.get(key);
 exports.getTxnArgs = getTxnArgs;
