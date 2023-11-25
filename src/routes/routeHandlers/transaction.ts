@@ -1,6 +1,5 @@
 import { RequestHandler } from 'express';
-import { listBanks, verifyPay } from '../../services/paystack/paystack';
-// import { verifyPaySchema } from '../../utils/validators';
+import { verifyPay } from '../../services/paystack/paystack';
 
 export const verifyTransHandler: RequestHandler = async (req, res) => {
   try {
@@ -28,17 +27,6 @@ export const verifyTransHandler: RequestHandler = async (req, res) => {
     return res.status(500).json({
       success: false,
       message: 'Internal server error',
-    });
-  }
-};
-
-export const listBanksHandler: RequestHandler = async (_, res) => {
-  try {
-    return res.json(await listBanks());
-  } catch (err) {
-    return res.status(500).json({
-      success: false,
-      message: 'internal server error',
     });
   }
 };

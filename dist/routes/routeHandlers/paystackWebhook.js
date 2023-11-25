@@ -5,6 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.webhookHandler = void 0;
 const authHash_1 = __importDefault(require("../../services/paystack/authHash"));
+const updateBalanceService_1 = __importDefault(require("../../utils/transactions/updateBalanceService"));
 const webhookHandler = async (req, res) => {
     const hash = (0, authHash_1.default)(req.body);
     if (hash === req.headers['x-paystack-signature']) {
@@ -14,20 +15,12 @@ const webhookHandler = async (req, res) => {
         try {
             let response;
             if (event.event === 'charge.success') {
-                // response = await fundAccount(event);
-            }
-            if (event.event === 'transfer.success') {
-                // response = await withdrawfromAccount(event);
-            }
-            if (event.event === 'transfer.failed') {
-                // response = await reverseTransferDebit(event);
-                // response = 'transfer failed, please try again';
+                response = await (0, updateBalanceService_1.default)(event);
             }
             console.log(response);
-            // sendSlackNotif(response);
         }
         catch (error) {
-            // sendSlackNotif(error);
+            console.log(error);
         }
     }
     res.sendStatus(200);

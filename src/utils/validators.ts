@@ -77,6 +77,13 @@ const createInvoiceSchema = joi.object({
 
 const invoiceIdSchema = joi.number().integer().min(1).required();
 
+const paySchema = joi.object({
+  amount: joi.number().integer().min(30).required(),
+  userId: idSchema,
+  invoiceId: invoiceIdSchema,
+  payerEmail: joi.string().email().required(),
+});
+
 const transactionHistorySchema = joi
   .object({
     limit: joi.number().integer().min(1),
@@ -103,4 +110,5 @@ export {
   customerEmailSchema,
   createInvoiceSchema,
   invoiceIdSchema,
+  paySchema,
 };

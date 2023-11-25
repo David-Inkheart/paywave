@@ -1,5 +1,6 @@
 import { RequestHandler } from 'express';
 import hashedAuth from '../../services/paystack/authHash';
+import updateBalance from '../../utils/transactions/updateBalanceService';
 
 export const webhookHandler: RequestHandler = async (req, res) => {
   const hash = hashedAuth(req.body);
@@ -10,19 +11,11 @@ export const webhookHandler: RequestHandler = async (req, res) => {
     try {
       let response;
       if (event.event === 'charge.success') {
-        // response = await fundAccount(event);
-      }
-      if (event.event === 'transfer.success') {
-        // response = await withdrawfromAccount(event);
-      }
-      if (event.event === 'transfer.failed') {
-        // response = await reverseTransferDebit(event);
-        // response = 'transfer failed, please try again';
+        response = await updateBalance(event);
       }
       console.log(response);
-      // sendSlackNotif(response);
     } catch (error) {
-      // sendSlackNotif(error);
+      console.log(error);
     }
   }
   res.sendStatus(200);

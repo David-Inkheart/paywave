@@ -11,12 +11,16 @@ const home_1 = require("./routeHandlers/home");
 const businessProfile_1 = require("./routeHandlers/businessProfile");
 const customer_1 = require("./routeHandlers/customer");
 const invoice_1 = require("./routeHandlers/invoice");
+const payment_1 = require("./routeHandlers/payment");
+const paystackWebhook_1 = require("./routeHandlers/paystackWebhook");
 const router = express_1.default.Router();
 router.get('/', home_1.getHomeHandler);
 router.post('/auth/register', auth_1.registerHandler);
 router.post('/auth/login', auth_1.loginHandler);
 router.post('/auth/reset-password', auth_1.resetPasswordHandler);
 router.post('/auth/reset-password/confirm', auth_1.confirmResetPasswordHandler);
+// paystack webhook
+router.post('/paystack-webhook', paystackWebhook_1.webhookHandler);
 // router.use(authMiddleware);
 router.post('/auth/change-password', authMiddleware_1.default, auth_1.changePasswordHandler);
 // business profile routes
@@ -33,5 +37,7 @@ router.post('/create-customer', authMiddleware_1.default, customer_1.createCusto
 router.post('/create-invoice/:customerId', authMiddleware_1.default, invoice_1.createInvoiceHandler);
 router.get('/invoice/:invoiceId', authMiddleware_1.default, invoice_1.getInvoiceHandler);
 router.get('/all-invoices', authMiddleware_1.default, invoice_1.getAllInvoicesHandler);
+// transaction routes
+router.post('/payment/:invoiceId', authMiddleware_1.default, payment_1.paymentHandler);
 exports.default = router;
 //# sourceMappingURL=index.js.map

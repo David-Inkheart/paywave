@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getAllInvoices = exports.getInvoice = exports.createInvoice = void 0;
+exports.updateInvoice = exports.getAllInvoices = exports.getInvoice = exports.createInvoice = void 0;
 const db_server_1 = __importDefault(require("../utils/db.server"));
 const createInvoice = ({ businessAccountId, customerId, totalAmount, paymentDueDate, items, }) => {
     return db_server_1.default.invoice.create({
@@ -37,4 +37,34 @@ const getAllInvoices = (businessAccountId) => {
     });
 };
 exports.getAllInvoices = getAllInvoices;
+const updateInvoice = async ({ customerId, invoiceId, businessAccountId, paymentStatus, reference, totalAmount, txn }) => {
+    return txn
+        ? txn.invoice.updateMany({
+            where: {
+                customerId,
+                id: invoiceId,
+                businessAccountId,
+                reference,
+                totalAmount,
+            },
+            data: {
+                paymentStatus,
+                reference,
+            },
+        })
+        : db_server_1.default.invoice.updateMany({
+            where: {
+                id: invoiceId,
+                customerId,
+                businessAccountId,
+                reference,
+                totalAmount,
+            },
+            data: {
+                paymentStatus,
+                reference,
+            },
+        });
+};
+exports.updateInvoice = updateInvoice;
 //# sourceMappingURL=db.invoice.js.map

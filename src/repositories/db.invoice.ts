@@ -1,6 +1,16 @@
 import { Prisma } from '@prisma/client';
 import prisma from '../utils/db.server';
 
+interface UpdateInvoiceInput {
+  invoiceId: number;
+  customerId: number;
+  businessAccountId: number;
+  totalAmount: number;
+  paymentStatus: 'PENDING' | 'PAID' | 'FAILED';
+  reference: string;
+  txn?: Prisma.TransactionClient;
+}
+
 export const createInvoice = ({
   businessAccountId,
   customerId,
@@ -43,4 +53,34 @@ export const getAllInvoices = (businessAccountId: number) => {
     where: { businessAccountId },
     include: { items: true },
   });
+};
+
+export const updateInvoice = async ({ customerId, invoiceId, businessAccountId, paymentStatus, reference, totalAmount, txn }: UpdateInvoiceInput) => {
+  return txn
+    ? txn.invoice.updateMany({
+        where: {
+          customerId,
+          id: invoiceId,
+          businessAccountId,
+          reference,
+          totalAmount,
+        },
+        data: {
+          paymentStatus,
+          reference,
+        },
+      })
+    : prisma.invoice.updateMany({
+        where: {
+          id: invoiceId,
+          customerId,
+          businessAccountId,
+          reference,
+          totalAmount,
+        },
+        data: {
+          paymentStatus,
+          reference,
+        },
+      });
 };

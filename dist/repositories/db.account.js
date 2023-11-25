@@ -12,8 +12,8 @@ const findbusinessAccount = (data) => {
 exports.findbusinessAccount = findbusinessAccount;
 const findbusinessAccountbyUserId = (userId, txn) => {
     return txn
-        ? txn.$queryRaw(client_1.Prisma.sql `SELECT * FROM "public"."businessAccount" WHERE "userId" = ${userId} FOR UPDATE;`)
-        : db_server_1.default.$queryRaw(client_1.Prisma.sql `SELECT * FROM "public"."businessAccount" WHERE "userId" = ${userId} FOR UPDATE;`);
+        ? txn.$queryRaw(client_1.Prisma.sql `SELECT * FROM "public"."BusinessAccount" WHERE "userId" = ${userId} FOR UPDATE;`)
+        : db_server_1.default.$queryRaw(client_1.Prisma.sql `SELECT * FROM "public"."BusinessAccount" WHERE "userId" = ${userId} FOR UPDATE;`);
 };
 exports.findbusinessAccountbyUserId = findbusinessAccountbyUserId;
 const updatebusinessAccount = (id, data) => {
@@ -48,7 +48,6 @@ const creditbusinessAccount = ({ amount, businessAccountId, txn, }) => txn
                 increment: amount,
             },
         },
-        select: { balance: true },
     })
     : db_server_1.default.businessAccount.update({
         where: { id: businessAccountId },
@@ -57,7 +56,6 @@ const creditbusinessAccount = ({ amount, businessAccountId, txn, }) => txn
                 increment: amount,
             },
         },
-        select: { balance: true },
     });
 exports.creditbusinessAccount = creditbusinessAccount;
 // export const getSubType = (name: string) => prisma.transactionSubType.findFirst({ where: { name } });
