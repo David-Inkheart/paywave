@@ -58,6 +58,23 @@ const customerEmailSchema = joi.object({
   customerEmail: joi.string().email().required(),
 });
 
+const createInvoiceSchema = joi.object({
+  userId: joi.number().integer().min(1).required(),
+  customerId: joi.number().integer().min(1).required(),
+  items: joi
+    .array()
+    .items(
+      joi.object({
+        name: joi.string().min(3).max(30).required(),
+        description: joi.string().min(3).max(30),
+        price: joi.number().integer().min(1).required(),
+        quantity: joi.number().integer().min(1).required(),
+      }),
+    )
+    .min(1)
+    .required(),
+});
+
 const transactionHistorySchema = joi
   .object({
     limit: joi.number().integer().min(1),
@@ -82,4 +99,5 @@ export {
   paymentDetailsSchema,
   customerDetailSchema,
   customerEmailSchema,
+  createInvoiceSchema,
 };

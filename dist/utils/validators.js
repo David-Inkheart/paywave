@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.customerEmailSchema = exports.customerDetailSchema = exports.paymentDetailsSchema = exports.businessDetailsSchema = exports.transactionHistorySchema = exports.idSchema = exports.resetPasswordSchema = exports.forgotPasswordSchema = exports.changePasswordSchema = exports.registerSchema = exports.loginSchema = void 0;
+exports.createInvoiceSchema = exports.customerEmailSchema = exports.customerDetailSchema = exports.paymentDetailsSchema = exports.businessDetailsSchema = exports.transactionHistorySchema = exports.idSchema = exports.resetPasswordSchema = exports.forgotPasswordSchema = exports.changePasswordSchema = exports.registerSchema = exports.loginSchema = void 0;
 const joi_1 = __importDefault(require("joi"));
 const registerSchema = joi_1.default.object({
     firstName: joi_1.default.string().min(3).max(20).alphanum().required(),
@@ -63,6 +63,21 @@ const customerEmailSchema = joi_1.default.object({
     customerEmail: joi_1.default.string().email().required(),
 });
 exports.customerEmailSchema = customerEmailSchema;
+const createInvoiceSchema = joi_1.default.object({
+    userId: joi_1.default.number().integer().min(1).required(),
+    customerId: joi_1.default.number().integer().min(1).required(),
+    items: joi_1.default
+        .array()
+        .items(joi_1.default.object({
+        name: joi_1.default.string().min(3).max(30).required(),
+        description: joi_1.default.string().min(3).max(30),
+        price: joi_1.default.number().integer().min(1).required(),
+        quantity: joi_1.default.number().integer().min(1).required(),
+    }))
+        .min(1)
+        .required(),
+});
+exports.createInvoiceSchema = createInvoiceSchema;
 const transactionHistorySchema = joi_1.default
     .object({
     limit: joi_1.default.number().integer().min(1),

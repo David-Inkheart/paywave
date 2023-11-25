@@ -52,13 +52,13 @@ model Customer {
 model Invoice {
   id                Int             @id @default(autoincrement())
   businessAccountId Int
-  customerId        Int?
+  customerId        Int
   totalAmount            Decimal
   createdAt         DateTime        @default(now()) @db.Timestamptz(3)
   updatedAt         DateTime        @updatedAt @db.Timestamptz(3)
   paymentDueDate    DateTime
   businessAccount   BusinessAccount @relation(fields: [businessAccountId], references: [id])
-  Customer          Customer?       @relation(fields: [customerId], references: [id])
+  customer          Customer       @relation(fields: [customerId], references: [id])
   items             Item[]
   paymentStatus     PaymentStatus   @default(PENDING)
   reference         String?
@@ -70,9 +70,9 @@ model Item {
   description String?
   price       Decimal
   quantity    Int
-  invoiceId   Int
   createdAt   DateTime @default(now()) @db.Timestamptz(3)
   updatedAt   DateTime @updatedAt @db.Timestamptz(3)
+  invoiceId   Int
   invoice     Invoice  @relation(fields: [invoiceId], references: [id])
 }
 
