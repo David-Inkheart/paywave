@@ -1,5 +1,7 @@
 # Welcome to the paywave Backend Service Repository!
 
+![Paywave-logo](https://github.com/David-Inkheart/paywave/assets/106752187/a48ced33-c2f1-4702-9eb1-ae4dbaeb3b35)
+
 ## Table of Contents
 
 - [Overview](#overview)
@@ -14,20 +16,22 @@
 
 ## Overview
 
-Paywave Backend Service is the server-side component of the Paywave fintech payment application. This service efficiently handles user authentication, payment processing, transaction management, and more.
+Paywave Backend Service is the server-side component of the Paywave fintech payment application(SME payment management). This service efficiently handles user authentication, customer profile management, invoice management, payment processing, transaction management, and more.
 
 ## Features
 
 - User registration and authentication
 - Secure payment gateway integration
 - Client profile management
-- Small business bill payments
+- Small business payments
+- Invoice management
+- email notifications
 - Transaction history and analytics
 
 ## Future Features
 
 - Notifications and alerts
-- API for third-party integration
+- more API for third-party integration
 - Chatbot for customer support
 
 ## Getting Started
