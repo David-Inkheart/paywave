@@ -40,7 +40,7 @@ To begin using the paywave Backend Service, follow these steps:
 
 ## Installation
 
-1. Clone this repository: `git clone https://github.com/David-Inkheart/paywave/tree/paywave-hosting-test.git`
+1. Clone this repository: `git clone https://github.com/David-Inkheart/paywave.git`
 2. Navigate to the project directory: `cd paywave`
 3. Install dependencies: `npm install`
 
