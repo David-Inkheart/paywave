@@ -3,6 +3,7 @@ import { findCustomer } from '../../repositories/db.customer';
 import { updateInvoice } from '../../repositories/db.invoice';
 import { recordTransaction } from '../../repositories/db.transactions';
 import { findUser } from '../../repositories/db.user';
+import { sendEmail } from '../../services/email/email';
 import prisma from '../db.server';
 
 async function updateBalance(event: any) {
@@ -53,6 +54,24 @@ async function updateBalance(event: any) {
         tx,
       );
     });
+
+    // send email to customer and business owner
+    const { businessName } = businessAccount[0];
+
+    await Promise.all([
+      sendEmail({
+        recipientEmail: payerEmail,
+        templateName: 'payer-payment-successful',
+        subject: 'Payment Successful',
+        data: { businessName, payerName: payer!.name },
+      }),
+      sendEmail({
+        recipientEmail: email,
+        templateName: 'business-payment-successful',
+        subject: `Payment Received`,
+        data: { businessName, payerName: payer!.name },
+      }),
+    ]);
   } catch (error) {
     console.log(error);
   }

@@ -2,7 +2,7 @@ import { Item } from '@prisma/client';
 import { findbusinessAccount } from '../repositories/db.account';
 import { UserId } from '../types/custom';
 import { createInvoiceSchema, invoiceIdSchema } from '../utils/validators';
-import { createInvoice, findInvoice, getAllInvoices, getInvoice } from '../repositories/db.invoice';
+import { createInvoice, getAllInvoices, getInvoice } from '../repositories/db.invoice';
 import hashArguments from '../utils/hash';
 import isDuplicateTxn from '../utils/transactions/checkTransaction';
 import { sendEmail } from '../services/email/email';

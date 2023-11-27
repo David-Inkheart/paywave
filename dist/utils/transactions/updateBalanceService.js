@@ -8,6 +8,7 @@ const db_customer_1 = require("../../repositories/db.customer");
 const db_invoice_1 = require("../../repositories/db.invoice");
 const db_transactions_1 = require("../../repositories/db.transactions");
 const db_user_1 = require("../../repositories/db.user");
+const email_1 = require("../../services/email/email");
 const db_server_1 = __importDefault(require("../db.server"));
 async function updateBalance(event) {
     try {
@@ -47,6 +48,22 @@ async function updateBalance(event) {
                 metadata,
             }, tx);
         });
+        // send email to customer and business owner
+        const { businessName } = businessAccount[0];
+        await Promise.all([
+            (0, email_1.sendEmail)({
+                recipientEmail: payerEmail,
+                templateName: 'payer-payment-successful',
+                subject: 'Payment Successful',
+                data: { businessName, payerName: payer.name },
+            }),
+            (0, email_1.sendEmail)({
+                recipientEmail: email,
+                templateName: 'business-payment-successful',
+                subject: `Payment Received`,
+                data: { businessName, payerName: payer.name },
+            }),
+        ]);
     }
     catch (error) {
         console.log(error);

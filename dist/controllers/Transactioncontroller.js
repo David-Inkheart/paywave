@@ -53,7 +53,13 @@ class TransactionController {
             };
         }
         const { businessName } = businessAccount;
-        const invoice = await (0, db_invoice_1.getInvoice)(invoiceId);
+        // check if invoice exists
+        const invoice = await (0, db_invoice_1.findInvoice)({
+            id: Number(invoiceId),
+            customerId: payer.id,
+            businessAccountId: businessAccount.id,
+            totalAmount: amount,
+        });
         if (!invoice) {
             return {
                 success: false,

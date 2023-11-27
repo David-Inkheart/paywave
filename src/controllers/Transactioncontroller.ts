@@ -6,7 +6,7 @@ import isDuplicateTxn from '../utils/transactions/checkTransaction';
 import { findUser } from '../repositories/db.user';
 import { paySchema, transactionHistorySchema } from '../utils/validators';
 import { findCustomer } from '../repositories/db.customer';
-import { getInvoice } from '../repositories/db.invoice';
+import { findInvoice } from '../repositories/db.invoice';
 import { getTransactions } from '../repositories/db.transactions';
 import { findbusinessAccount } from '../repositories/db.account';
 
@@ -62,7 +62,13 @@ class TransactionController {
 
     const { businessName } = businessAccount;
 
-    const invoice = await getInvoice(invoiceId);
+    // check if invoice exists
+    const invoice = await findInvoice({
+      id: Number(invoiceId),
+      customerId: payer!.id,
+      businessAccountId: businessAccount!.id,
+      totalAmount: amount,
+    });
 
     if (!invoice) {
       return {
