@@ -1,4 +1,4 @@
-# Welcome to the paywave Backend Service Repository!
+# Welcome to the Paywave Backend Service Repository!
 
 ![Paywave-logo](https://github.com/David-Inkheart/paywave/assets/106752187/a48ced33-c2f1-4702-9eb1-ae4dbaeb3b35)
 
@@ -40,7 +40,7 @@ To begin using the paywave Backend Service, follow these steps:
 
 ## Installation
 
-1. Clone this repository: `git clone https://github.com/David-Inkheart/paywave.git`
+1. Clone this repository: `git clone https://github.com/David-Inkheart/paywave/tree/paywave-hosting-test.git`
 2. Navigate to the project directory: `cd paywave`
 3. Install dependencies: `npm install`
 
@@ -51,7 +51,7 @@ To begin using the paywave Backend Service, follow these steps:
 
 ## API Documentation
 
-Explore the detailed API documentation in the [API Documentation](api-documentation.md) file.
+Detailed API documentation is available. Please mail me to request access to the documentation.
 
 ## Security
 
@@ -72,3 +72,11 @@ We welcome contributions to enhance the paywave Backend Service. To contribute:
 ## License
 
 This project is licensed under the [MIT License](LICENSE).
+
+## Contact
+
+📧 Email: [okoliedave1@gmail.com](mailto:okoliedave1@gmail.com)
+
+🔗 LinkedIn: [LinkedIn Profile](https://www.linkedin.com/in/david-okolie/)
+
+🐦 Twitter: [Twitter Profile](https://twitter.com/David_Inkheart)
