@@ -2,9 +2,11 @@ import { Item } from '@prisma/client';
 import { findbusinessAccount } from '../repositories/db.account';
 import { UserId } from '../types/custom';
 import { createInvoiceSchema, invoiceIdSchema } from '../utils/validators';
-import { createInvoice, getAllInvoices, getInvoice } from '../repositories/db.invoice';
+import { createInvoice, findInvoice, getAllInvoices, getInvoice } from '../repositories/db.invoice';
 import hashArguments from '../utils/hash';
 import isDuplicateTxn from '../utils/transactions/checkTransaction';
+import { sendEmail } from '../services/email/email';
+import { findCustomer } from '../repositories/db.customer';
 
 class InvoiceController {
   static async createPaymentInvoice({ userId, customerId, items }: { userId: UserId; customerId: number; items: Item[] }) {
@@ -27,6 +29,14 @@ class InvoiceController {
         };
       }
 
+      const customerDetails = await findCustomer({ id: customerId });
+      if (!customerDetails) {
+        return {
+          success: false,
+          error: 'Customer does not exist',
+        };
+      }
+
       // Aggregate the total amount of the invoice
       const totalAmount = items.reduce((acc, item) => acc + Number(item.price) * item.quantity, 0);
 
@@ -45,8 +55,22 @@ class InvoiceController {
         };
       }
 
-      // Create the invoice and connect items
-      await createInvoice({ businessAccountId: businessAccount.id, customerId, totalAmount, paymentDueDate, items });
+      await Promise.all([
+        createInvoice({ businessAccountId: businessAccount.id, customerId, totalAmount, paymentDueDate, items }),
+        sendEmail({
+          recipientEmail: customerDetails.email,
+          templateName: 'invoice',
+          subject: `Invoice from ${businessAccount.businessName}`,
+          data: {
+            businessName: businessAccount.businessName,
+            customerName: customerDetails.name,
+            // divide by 100 to get the actual amount and add the currency
+            totalAmount: `${totalAmount / 100} NGN`,
+            paymentDueDate,
+            items,
+          },
+        }),
+      ]);
 
       return {
         success: true,

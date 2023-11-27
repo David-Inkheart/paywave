@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateInvoice = exports.getAllInvoices = exports.getInvoice = exports.createInvoice = void 0;
+exports.updateInvoice = exports.getAllInvoices = exports.findInvoice = exports.getInvoice = exports.createInvoice = void 0;
 const db_server_1 = __importDefault(require("../utils/db.server"));
 const createInvoice = ({ businessAccountId, customerId, totalAmount, paymentDueDate, items, }) => {
     return db_server_1.default.invoice.create({
@@ -30,6 +30,10 @@ const getInvoice = (id) => {
     });
 };
 exports.getInvoice = getInvoice;
+const findInvoice = (data) => {
+    return db_server_1.default.invoice.findFirst({ where: data });
+};
+exports.findInvoice = findInvoice;
 const getAllInvoices = (businessAccountId) => {
     return db_server_1.default.invoice.findMany({
         where: { businessAccountId },

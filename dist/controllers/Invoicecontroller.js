@@ -8,6 +8,8 @@ const validators_1 = require("../utils/validators");
 const db_invoice_1 = require("../repositories/db.invoice");
 const hash_1 = __importDefault(require("../utils/hash"));
 const checkTransaction_1 = __importDefault(require("../utils/transactions/checkTransaction"));
+const email_1 = require("../services/email/email");
+const db_customer_1 = require("../repositories/db.customer");
 class InvoiceController {
     static async createPaymentInvoice({ userId, customerId, items }) {
         try {
@@ -25,6 +27,13 @@ class InvoiceController {
                     error: 'business account does not exist',
                 };
             }
+            const customerDetails = await (0, db_customer_1.findCustomer)({ id: customerId });
+            if (!customerDetails) {
+                return {
+                    success: false,
+                    error: 'Customer does not exist',
+                };
+            }
             // Aggregate the total amount of the invoice
             const totalAmount = items.reduce((acc, item) => acc + Number(item.price) * item.quantity, 0);
             // Payment due date is 24 hours from now
@@ -39,8 +48,22 @@ class InvoiceController {
                     error: 'Invoice already exists',
                 };
             }
-            // Create the invoice and connect items
-            await (0, db_invoice_1.createInvoice)({ businessAccountId: businessAccount.id, customerId, totalAmount, paymentDueDate, items });
+            await Promise.all([
+                (0, db_invoice_1.createInvoice)({ businessAccountId: businessAccount.id, customerId, totalAmount, paymentDueDate, items }),
+                (0, email_1.sendEmail)({
+                    recipientEmail: customerDetails.email,
+                    templateName: 'invoice',
+                    subject: `Invoice from ${businessAccount.businessName}`,
+                    data: {
+                        businessName: businessAccount.businessName,
+                        customerName: customerDetails.name,
+                        // divide by 100 to get the actual amount and add the currency
+                        totalAmount: `${totalAmount / 100} NGN`,
+                        paymentDueDate,
+                        items,
+                    },
+                }),
+            ]);
             return {
                 success: true,
                 message: 'Invoice created successfully',

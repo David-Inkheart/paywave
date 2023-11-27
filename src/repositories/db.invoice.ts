@@ -48,6 +48,10 @@ export const getInvoice = (id: number) => {
   });
 };
 
+export const findInvoice = (data: Prisma.InvoiceWhereInput) => {
+  return prisma.invoice.findFirst({ where: data });
+};
+
 export const getAllInvoices = (businessAccountId: number) => {
   return prisma.invoice.findMany({
     where: { businessAccountId },
