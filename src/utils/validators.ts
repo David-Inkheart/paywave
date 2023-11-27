@@ -95,6 +95,10 @@ const transactionHistorySchema = joi
   .with('limit', 'page')
   .with('startDate', 'endDate');
 
+const verifyPaySchema = joi.object({
+  reference: joi.string().uuid().required(),
+});
+
 export {
   loginSchema,
   registerSchema,
@@ -110,4 +114,5 @@ export {
   createInvoiceSchema,
   invoiceIdSchema,
   paySchema,
+  verifyPaySchema,
 };

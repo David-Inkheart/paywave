@@ -26,8 +26,8 @@ paystackClient.interceptors.response.use(
     if (error.response.status >= 400 && error.response.status <= 499) {
       console.log(error.response);
       return {
-        success: false,
-        message: 'Bad request: you probably sent an invalid request',
+        success: error.response.data.status,
+        message: error.response.data.message,
       };
     }
     throw new Error('Internal server error');

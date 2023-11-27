@@ -1,5 +1,6 @@
 import nodemailer from 'nodemailer';
 import pug from 'pug';
+import path from 'path';
 
 const transporter = nodemailer.createTransport({
   service: 'gmail',
@@ -10,29 +11,27 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-const selectTemplateFromPurpose = ({ purpose, businessName, otp }: { purpose: string; businessName: string; otp: number | undefined }) => {
-  if (purpose === 'welcome') {
-    return pug.renderFile(`${process.cwd()}/templates/welcome.pug`, { businessName });
-  }
-  return pug.renderFile(`${process.cwd()}/templates/resetPassword.pug`, { businessName, otp });
+const renderEmailTemplate = (templateName: string, data: { [key: string]: any }) => {
+  const templatePath = path.join(process.cwd(), 'templates', `${templateName}.pug`);
+  return pug.renderFile(templatePath, data);
 };
 
 const sendEmail = async ({
   recipientEmail,
-  purpose,
-  businessName,
-  otp,
+  templateName,
+  subject,
+  data,
 }: {
   recipientEmail: string;
-  purpose: string;
-  businessName: string;
-  otp: number | undefined;
+  templateName: string;
+  subject: string;
+  data: { [key: string]: any };
 }) => {
   return transporter.sendMail({
-    from: `"paywave" <${process.env.EMAIL}>`, // sender address
-    to: recipientEmail, // list of receivers
-    subject: purpose === 'welcome' ? 'Welcome to paywave' : 'Password Reset Confirmation', // Subject line
-    html: selectTemplateFromPurpose({ businessName, purpose, otp }), // html body
+    from: `"paywave" <${process.env.EMAIL}>`,
+    to: recipientEmail,
+    subject,
+    html: renderEmailTemplate(templateName, data),
   });
 };
 

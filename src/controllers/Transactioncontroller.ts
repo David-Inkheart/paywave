@@ -8,6 +8,7 @@ import { paySchema, transactionHistorySchema } from '../utils/validators';
 import { findCustomer } from '../repositories/db.customer';
 import { getInvoice } from '../repositories/db.invoice';
 import { getTransactions } from '../repositories/db.transactions';
+import { findbusinessAccount } from '../repositories/db.account';
 
 configDotenv();
 
@@ -50,6 +51,17 @@ class TransactionController {
       };
     }
 
+    const businessAccount = await findbusinessAccount({ userId });
+
+    if (!businessAccount) {
+      return {
+        success: false,
+        message: 'Business account does not exist',
+      };
+    }
+
+    const { businessName } = businessAccount;
+
     const invoice = await getInvoice(invoiceId);
 
     if (!invoice) {
@@ -68,7 +80,7 @@ class TransactionController {
 
     const payerDetails = `${payerEmail}:${invoiceId}`;
 
-    const result = await initPay({ email: user!.email, amount, metadata: { payerDetails } });
+    const result = await initPay({ email: user!.email, amount, metadata: { payerDetails, businessName } });
 
     return {
       success: true,

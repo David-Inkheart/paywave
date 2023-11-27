@@ -62,9 +62,9 @@ class AuthController {
     // send welcome email
     await sendEmail({
       recipientEmail: newUser.email,
-      businessName,
-      purpose: 'welcome',
-      otp: undefined,
+      templateName: 'welcome',
+      subject: 'Welcome to paywave',
+      data: { businessName },
     });
 
     return {
@@ -111,9 +111,9 @@ class AuthController {
 
     await sendEmail({
       recipientEmail: user.email,
-      businessName: businessAccount!.businessName,
-      purpose: 'welcome',
-      otp: undefined,
+      templateName: 'login-successful',
+      subject: 'Login Successful',
+      data: { businessName: businessAccount?.businessName },
     });
 
     return {

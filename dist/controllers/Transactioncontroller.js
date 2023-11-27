@@ -12,6 +12,7 @@ const validators_1 = require("../utils/validators");
 const db_customer_1 = require("../repositories/db.customer");
 const db_invoice_1 = require("../repositories/db.invoice");
 const db_transactions_1 = require("../repositories/db.transactions");
+const db_account_1 = require("../repositories/db.account");
 (0, dotenv_1.configDotenv)();
 class TransactionController {
     static async paymentInit({ userId, invoiceId, payerEmail, amount }) {
@@ -44,6 +45,14 @@ class TransactionController {
                 message: 'Customer does not exist',
             };
         }
+        const businessAccount = await (0, db_account_1.findbusinessAccount)({ userId });
+        if (!businessAccount) {
+            return {
+                success: false,
+                message: 'Business account does not exist',
+            };
+        }
+        const { businessName } = businessAccount;
         const invoice = await (0, db_invoice_1.getInvoice)(invoiceId);
         if (!invoice) {
             return {
@@ -58,7 +67,7 @@ class TransactionController {
             };
         }
         const payerDetails = `${payerEmail}:${invoiceId}`;
-        const result = await (0, paystack_1.initPay)({ email: user.email, amount, metadata: { payerDetails } });
+        const result = await (0, paystack_1.initPay)({ email: user.email, amount, metadata: { payerDetails, businessName } });
         return {
             success: true,
             message: 'Payment initialized',

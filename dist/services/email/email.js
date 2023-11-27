@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.sendEmail = void 0;
 const nodemailer_1 = __importDefault(require("nodemailer"));
 const pug_1 = __importDefault(require("pug"));
+const path_1 = __importDefault(require("path"));
 const transporter = nodemailer_1.default.createTransport({
     service: 'gmail',
     host: 'smtp.gmail.com',
@@ -14,18 +15,16 @@ const transporter = nodemailer_1.default.createTransport({
         pass: process.env.EMAIL_APP_PASSWORD,
     },
 });
-const selectTemplateFromPurpose = ({ purpose, businessName, otp }) => {
-    if (purpose === 'welcome') {
-        return pug_1.default.renderFile(`${process.cwd()}/templates/welcome.pug`, { businessName });
-    }
-    return pug_1.default.renderFile(`${process.cwd()}/templates/resetPassword.pug`, { businessName, otp });
+const renderEmailTemplate = (templateName, data) => {
+    const templatePath = path_1.default.join(process.cwd(), 'templates', `${templateName}.pug`);
+    return pug_1.default.renderFile(templatePath, data);
 };
-const sendEmail = async ({ recipientEmail, purpose, businessName, otp, }) => {
+const sendEmail = async ({ recipientEmail, templateName, subject, data, }) => {
     return transporter.sendMail({
-        from: `"paywave" <${process.env.EMAIL}>`, // sender address
-        to: recipientEmail, // list of receivers
-        subject: purpose === 'welcome' ? 'Welcome to paywave' : 'Password Reset Confirmation', // Subject line
-        html: selectTemplateFromPurpose({ businessName, purpose, otp }), // html body
+        from: `"paywave" <${process.env.EMAIL}>`,
+        to: recipientEmail,
+        subject,
+        html: renderEmailTemplate(templateName, data),
     });
 };
 exports.sendEmail = sendEmail;

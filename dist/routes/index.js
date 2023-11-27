@@ -40,6 +40,7 @@ router.get('/invoice/:invoiceId', authMiddleware_1.default, invoice_1.getInvoice
 router.get('/all-invoices', authMiddleware_1.default, invoice_1.getAllInvoicesHandler);
 // transaction routes
 router.post('/payment/:invoiceId', authMiddleware_1.default, payment_1.paymentHandler);
-router.get('/transactions', transaction_1.getTransactionsHandler);
+router.get('/transactions', authMiddleware_1.default, transaction_1.getTransactionsHandler);
+router.get('/verify-pay', authMiddleware_1.default, transaction_1.verifyPayHandler);
 exports.default = router;
 //# sourceMappingURL=index.js.map

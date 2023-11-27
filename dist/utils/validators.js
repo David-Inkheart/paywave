@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.paySchema = exports.invoiceIdSchema = exports.createInvoiceSchema = exports.customerEmailSchema = exports.customerDetailSchema = exports.paymentDetailsSchema = exports.businessDetailsSchema = exports.transactionHistorySchema = exports.idSchema = exports.resetPasswordSchema = exports.forgotPasswordSchema = exports.changePasswordSchema = exports.registerSchema = exports.loginSchema = void 0;
+exports.verifyPaySchema = exports.paySchema = exports.invoiceIdSchema = exports.createInvoiceSchema = exports.customerEmailSchema = exports.customerDetailSchema = exports.paymentDetailsSchema = exports.businessDetailsSchema = exports.transactionHistorySchema = exports.idSchema = exports.resetPasswordSchema = exports.forgotPasswordSchema = exports.changePasswordSchema = exports.registerSchema = exports.loginSchema = void 0;
 const joi_1 = __importDefault(require("joi"));
 const registerSchema = joi_1.default.object({
     firstName: joi_1.default.string().min(3).max(20).alphanum().required(),
@@ -98,4 +98,8 @@ const transactionHistorySchema = joi_1.default
     .with('limit', 'page')
     .with('startDate', 'endDate');
 exports.transactionHistorySchema = transactionHistorySchema;
+const verifyPaySchema = joi_1.default.object({
+    reference: joi_1.default.string().uuid().required(),
+});
+exports.verifyPaySchema = verifyPaySchema;
 //# sourceMappingURL=validators.js.map

@@ -3,10 +3,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.verifyTransHandler = exports.getTransactionsHandler = void 0;
+exports.verifyPayHandler = exports.getTransactionsHandler = void 0;
 const paystack_1 = require("../../services/paystack/paystack");
 const Transactioncontroller_1 = __importDefault(require("../../controllers/Transactioncontroller"));
 const pagination_1 = __importDefault(require("../../utils/pagination"));
+const validators_1 = require("../../utils/validators");
+const email_1 = require("../../services/email/email");
+const db_customer_1 = require("../../repositories/db.customer");
+const db_user_1 = require("../../repositories/db.user");
 const getTransactionsHandler = async (req, res) => {
     try {
         const userId = req.userId;
@@ -48,31 +52,48 @@ const getTransactionsHandler = async (req, res) => {
     }
 };
 exports.getTransactionsHandler = getTransactionsHandler;
-const verifyTransHandler = async (req, res) => {
+const verifyPayHandler = async (req, res) => {
     try {
+        const userId = req.userId;
         const { reference } = req.query;
-        // const { error } = verifyPaySchema.validate({ reference });
-        // if (error) {
-        //   return res.status(400).json({
-        //     success: false,
-        //     message: error.message,
-        //   });
-        // }
+        const { error } = validators_1.verifyPaySchema.validate({ reference });
+        if (error) {
+            return res.status(400).json({
+                success: false,
+                message: error.message,
+            });
+        }
         const response = await (0, paystack_1.verifyPay)(reference);
-        // if (!response.status) {
-        //   return res.status(400).json({
-        //     success: response.status,
-        //     message: response.message,
-        //   });
-        // }
+        const { businessName } = response.data.metadata;
+        const payerEmail = response.data.metadata.payerDetails.split(':')[0];
+        const payer = await (0, db_customer_1.findCustomer)({ email: payerEmail });
+        const businessOwner = await (0, db_user_1.findUser)({ id: userId });
+        await Promise.all([
+            (0, email_1.sendEmail)({
+                recipientEmail: payerEmail,
+                templateName: 'payer-payment-successful',
+                subject: 'Payment Successful',
+                data: { businessName, payerName: payer.name },
+            }),
+            (0, email_1.sendEmail)({
+                recipientEmail: businessOwner.email,
+                templateName: 'business-payment-successful',
+                subject: `Payment Received`,
+                data: { businessName, payerName: payer.name },
+            }),
+        ]);
+        if (!response.status) {
+            return res.status(400).json(response);
+        }
         return res.json(response);
     }
     catch (err) {
+        console.log(err);
         return res.status(500).json({
             success: false,
             message: 'Internal server error',
         });
     }
 };
-exports.verifyTransHandler = verifyTransHandler;
+exports.verifyPayHandler = verifyPayHandler;
 //# sourceMappingURL=transaction.js.map

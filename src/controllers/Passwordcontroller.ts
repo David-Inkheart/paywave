@@ -83,12 +83,10 @@ class PasswordController {
       // send the code to the user's email address
       await sendEmail({
         recipientEmail: existingUser.email,
-        otp: passwordResetToken,
-        purpose: 'reset',
-        businessName: businessAccount!.businessName,
+        templateName: 'resetPassword',
+        subject: 'Password reset',
+        data: { businessName: businessAccount?.businessName, otp: passwordResetToken },
       });
-
-      console.log('Password reset code: ', passwordResetToken);
     }
 
     return {

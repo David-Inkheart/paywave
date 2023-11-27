@@ -44,9 +44,9 @@ class AuthController {
         // send welcome email
         await (0, email_1.sendEmail)({
             recipientEmail: newUser.email,
-            businessName,
-            purpose: 'welcome',
-            otp: undefined,
+            templateName: 'welcome',
+            subject: 'Welcome to paywave',
+            data: { businessName },
         });
         return {
             success: true,
@@ -87,9 +87,9 @@ class AuthController {
         const businessAccount = await (0, db_account_1.findbusinessAccount)({ userId: user.id });
         await (0, email_1.sendEmail)({
             recipientEmail: user.email,
-            businessName: businessAccount.businessName,
-            purpose: 'welcome',
-            otp: undefined,
+            templateName: 'login-successful',
+            subject: 'Login Successful',
+            data: { businessName: businessAccount?.businessName },
         });
         return {
             success: true,
