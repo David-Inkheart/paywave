@@ -19,11 +19,8 @@ async function updateBalance(event: any) {
 
     // find customer with email
     const payer = await findCustomer({ email: payerEmail });
-    console.log(payer);
 
     const businessAccount = await findbusinessAccountbyUserId(user!.id);
-
-    if (!businessAccount) throw new Error('account not found');
 
     await prisma.$transaction(async (tx) => {
       // credit business account
@@ -40,10 +37,12 @@ async function updateBalance(event: any) {
         txn: tx,
       });
 
-      console.log(invoice);
+      if (!invoice) throw new Error('invoice not found');
 
+      // record transaction
       await recordTransaction(
         {
+          customerId: payer!.id,
           invoiceId: Number(invoiceId),
           amount,
           reference,

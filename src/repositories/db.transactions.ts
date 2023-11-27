@@ -3,6 +3,7 @@ import { startOfDay, endOfDay } from 'date-fns';
 import prisma from '../utils/db.server';
 
 interface RecordTransactionInput {
+  customerId: number;
   invoiceId: number;
   amount: number;
   transactionType: 'card' | 'bankTransfer';
@@ -12,10 +13,11 @@ interface RecordTransactionInput {
 }
 
 export const recordTransaction = async (
-  { amount, transactionType, businessAccountId, invoiceId, reference, metadata }: RecordTransactionInput,
+  { amount, transactionType, businessAccountId, invoiceId, customerId, reference, metadata }: RecordTransactionInput,
   txn?: Prisma.TransactionClient,
 ) => {
   const createData = {
+    customerId,
     invoiceId,
     amount,
     transactionType,

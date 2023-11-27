@@ -6,8 +6,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.findTransaction = exports.getTransactions = exports.recordTransaction = void 0;
 const date_fns_1 = require("date-fns");
 const db_server_1 = __importDefault(require("../utils/db.server"));
-const recordTransaction = async ({ amount, transactionType, businessAccountId, invoiceId, reference, metadata }, txn) => {
+const recordTransaction = async ({ amount, transactionType, businessAccountId, invoiceId, customerId, reference, metadata }, txn) => {
     const createData = {
+        customerId,
         invoiceId,
         amount,
         transactionType,

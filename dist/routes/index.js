@@ -13,6 +13,7 @@ const customer_1 = require("./routeHandlers/customer");
 const invoice_1 = require("./routeHandlers/invoice");
 const payment_1 = require("./routeHandlers/payment");
 const paystackWebhook_1 = require("./routeHandlers/paystackWebhook");
+const transaction_1 = require("./routeHandlers/transaction");
 const router = express_1.default.Router();
 router.get('/', home_1.getHomeHandler);
 router.post('/auth/register', auth_1.registerHandler);
@@ -39,5 +40,6 @@ router.get('/invoice/:invoiceId', authMiddleware_1.default, invoice_1.getInvoice
 router.get('/all-invoices', authMiddleware_1.default, invoice_1.getAllInvoicesHandler);
 // transaction routes
 router.post('/payment/:invoiceId', authMiddleware_1.default, payment_1.paymentHandler);
+router.get('/transactions', transaction_1.getTransactionsHandler);
 exports.default = router;
 //# sourceMappingURL=index.js.map

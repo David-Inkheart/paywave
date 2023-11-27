@@ -62,7 +62,6 @@ export const updateInvoice = async ({ customerId, invoiceId, businessAccountId, 
           customerId,
           id: invoiceId,
           businessAccountId,
-          reference,
           totalAmount,
         },
         data: {

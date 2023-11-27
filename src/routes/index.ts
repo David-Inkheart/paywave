@@ -14,6 +14,7 @@ import {
 import { createInvoiceHandler, getAllInvoicesHandler, getInvoiceHandler } from './routeHandlers/invoice';
 import { paymentHandler } from './routeHandlers/payment';
 import { webhookHandler } from './routeHandlers/paystackWebhook';
+import { getTransactionsHandler } from './routeHandlers/transaction';
 
 const router = express.Router();
 
@@ -48,5 +49,6 @@ router.get('/all-invoices', authMiddleware, getAllInvoicesHandler);
 
 // transaction routes
 router.post('/payment/:invoiceId', authMiddleware, paymentHandler);
+router.get('/transactions', authMiddleware, getTransactionsHandler);
 
 export default router;

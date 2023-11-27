@@ -20,14 +20,13 @@ async function updateBalance(event) {
         const [payerEmail, invoiceId] = payerDetails.split(':');
         // find customer with email
         const payer = await (0, db_customer_1.findCustomer)({ email: payerEmail });
+        console.log(payer);
         const businessAccount = await (0, db_account_1.findbusinessAccountbyUserId)(user.id);
-        if (!businessAccount)
-            throw new Error('account not found');
         await db_server_1.default.$transaction(async (tx) => {
             // credit business account
             await (0, db_account_1.creditbusinessAccount)({ amount, businessAccountId: businessAccount[0].id, txn: tx });
             // update invoice
-            await (0, db_invoice_1.updateInvoice)({
+            const invoice = await (0, db_invoice_1.updateInvoice)({
                 invoiceId: Number(invoiceId),
                 customerId: payer.id,
                 businessAccountId: businessAccount[0].id,
@@ -36,7 +35,12 @@ async function updateBalance(event) {
                 reference,
                 txn: tx,
             });
+            if (!invoice)
+                throw new Error('invoice not found');
+            console.log(invoice);
+            // record transaction
             await (0, db_transactions_1.recordTransaction)({
+                customerId: payer.id,
                 invoiceId: Number(invoiceId),
                 amount,
                 reference,

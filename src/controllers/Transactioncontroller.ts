@@ -4,7 +4,10 @@ import { initPay } from '../services/paystack/paystack';
 import hashArguments from '../utils/hash';
 import isDuplicateTxn from '../utils/transactions/checkTransaction';
 import { findUser } from '../repositories/db.user';
-import { paySchema } from '../utils/validators';
+import { paySchema, transactionHistorySchema } from '../utils/validators';
+import { findCustomer } from '../repositories/db.customer';
+import { getInvoice } from '../repositories/db.invoice';
+import { getTransactions } from '../repositories/db.transactions';
 
 configDotenv();
 
@@ -30,7 +33,39 @@ class TransactionController {
     }
 
     const user = await findUser({ id: userId });
-    // join both payer and invoice details as a string seperated by a :
+
+    if (!user) {
+      return {
+        success: false,
+        message: 'User does not exist',
+      };
+    }
+
+    const payer = await findCustomer({ email: payerEmail });
+
+    if (!payer) {
+      return {
+        success: false,
+        message: 'Customer does not exist',
+      };
+    }
+
+    const invoice = await getInvoice(invoiceId);
+
+    if (!invoice) {
+      return {
+        success: false,
+        message: 'Invoice does not exist',
+      };
+    }
+
+    if (invoice.paymentStatus === 'PAID' && invoice.reference != null) {
+      return {
+        success: false,
+        message: 'Invoice already paid',
+      };
+    }
+
     const payerDetails = `${payerEmail}:${invoiceId}`;
 
     const result = await initPay({ email: user!.email, amount, metadata: { payerDetails } });
@@ -39,6 +74,38 @@ class TransactionController {
       success: true,
       message: 'Payment initialized',
       data: result,
+    };
+  }
+
+  static async getTransactionHistory({
+    userId,
+    limit,
+    page,
+    transactionType,
+    from,
+    to,
+  }: {
+    userId: number;
+    limit?: number;
+    page: number;
+    transactionType?: 'card' | 'bankTransfer';
+    from?: string;
+    to?: string;
+  }) {
+    const { error } = transactionHistorySchema.validate({ limit, page, transactionType, from, to });
+    if (error) {
+      return {
+        success: false,
+        message: error.message,
+      };
+    }
+
+    const transactions = await getTransactions({ userId, limit, page, from, to, transactionType });
+
+    return {
+      success: true,
+      message: 'Transactions fetched successfully',
+      data: transactions,
     };
   }
 }

@@ -44,7 +44,6 @@ const updateInvoice = async ({ customerId, invoiceId, businessAccountId, payment
                 customerId,
                 id: invoiceId,
                 businessAccountId,
-                reference,
                 totalAmount,
             },
             data: {

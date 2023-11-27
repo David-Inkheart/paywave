@@ -88,8 +88,7 @@ const transactionHistorySchema = joi
   .object({
     limit: joi.number().integer().min(1),
     page: joi.number().integer().min(1),
-    type: joi.string().valid('DEBIT', 'CREDIT'),
-    sub_type: joi.string().valid('TRANSFER', 'DEPOSIT', 'WITHDRAWAL', 'BANK_CHARGE', 'POS_TRANSACTION'),
+    transactionType: joi.string().valid('card', 'bankTransfer'),
     from: joi.date().iso(),
     to: joi.date().iso(),
   })
