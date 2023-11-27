@@ -56,6 +56,7 @@ export const getAllInvoices = (businessAccountId: number) => {
   return prisma.invoice.findMany({
     where: { businessAccountId },
     include: { items: true },
+    orderBy: { createdAt: 'desc' },
   });
 };
 

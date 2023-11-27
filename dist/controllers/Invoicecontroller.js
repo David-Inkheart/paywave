@@ -93,7 +93,6 @@ class InvoiceController {
                     error: 'business account does not exist',
                 };
             }
-            // Get the invoice and its items
             const invoice = await (0, db_invoice_1.getInvoice)(invoiceId);
             if (!invoice) {
                 return {
@@ -101,9 +100,14 @@ class InvoiceController {
                     error: 'Invoice does not exist',
                 };
             }
+            const customerDetails = await (0, db_customer_1.findCustomer)({ id: invoice.customerId });
             // Merge the invoice and business account details
             const invoicedetails = {
-                invoice,
+                invoice: {
+                    ...invoice,
+                    customerName: customerDetails.name,
+                    customerEmail: customerDetails.email,
+                },
                 businessAccount,
             };
             return {

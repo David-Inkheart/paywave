@@ -38,6 +38,7 @@ const getAllInvoices = (businessAccountId) => {
     return db_server_1.default.invoice.findMany({
         where: { businessAccountId },
         include: { items: true },
+        orderBy: { createdAt: 'desc' },
     });
 };
 exports.getAllInvoices = getAllInvoices;

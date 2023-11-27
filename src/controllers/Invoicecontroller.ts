@@ -105,7 +105,6 @@ class InvoiceController {
         };
       }
 
-      // Get the invoice and its items
       const invoice = await getInvoice(invoiceId);
 
       if (!invoice) {
@@ -115,9 +114,15 @@ class InvoiceController {
         };
       }
 
+      const customerDetails = await findCustomer({ id: invoice.customerId });
+
       // Merge the invoice and business account details
       const invoicedetails = {
-        invoice,
+        invoice: {
+          ...invoice,
+          customerName: customerDetails!.name,
+          customerEmail: customerDetails!.email,
+        },
         businessAccount,
       };
 
