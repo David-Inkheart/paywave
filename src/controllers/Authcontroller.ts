@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken';
 import { hashPassword, comparePasswords } from '../utils/passwordService';
 import { registerSchema, loginSchema } from '../utils/validators';
-import { createUser, findUser } from '../repositories/db.user';
+import { createUser, findUser, findUserByEmailOrPhone } from '../repositories/db.user';
 import { sendEmail } from '../services/email/email';
 import { findbusinessAccount } from '../repositories/db.account';
 
@@ -30,17 +30,29 @@ class AuthController {
         error: error.message,
       };
     }
-    // check if user is already existing email or username
-    const existingUser = await findUser({ email });
+    // check if user is already existing email or phone number
+    const existingUser = await findUserByEmailOrPhone({
+      OR: [{ email }, { phoneNumber }],
+    });
 
     if (existingUser) {
       return {
         success: false,
-        error: 'User with same email or names already exists',
+        error: 'User with same email or phoneNumber already exists',
       };
     }
-    // hash the password
+
     const hashedPassword = await hashPassword(password);
+
+    // check if business name is already existing
+    const existingBusiness = await findbusinessAccount({ businessName });
+
+    if (existingBusiness) {
+      return {
+        success: false,
+        error: 'Business with same name already exists',
+      };
+    }
 
     // create user and business account
     const newUser = await createUser(

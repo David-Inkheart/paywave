@@ -19,16 +19,25 @@ class AuthController {
                 error: error.message,
             };
         }
-        // check if user is already existing email or username
-        const existingUser = await (0, db_user_1.findUser)({ email });
+        // check if user is already existing email or phone number
+        const existingUser = await (0, db_user_1.findUserByEmailOrPhone)({
+            OR: [{ email }, { phoneNumber }],
+        });
         if (existingUser) {
             return {
                 success: false,
-                error: 'User with same email or names already exists',
+                error: 'User with same email or phoneNumber already exists',
             };
         }
-        // hash the password
         const hashedPassword = await (0, passwordService_1.hashPassword)(password);
+        // check if business name is already existing
+        const existingBusiness = await (0, db_account_1.findbusinessAccount)({ businessName });
+        if (existingBusiness) {
+            return {
+                success: false,
+                error: 'Business with same name already exists',
+            };
+        }
         // create user and business account
         const newUser = await (0, db_user_1.createUser)({
             firstName,

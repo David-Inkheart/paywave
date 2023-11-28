@@ -7,6 +7,11 @@ export const findUser = (data: Prisma.UserWhereUniqueInput) => {
   return prisma.user.findUnique({ where: data });
 };
 
+// find user with email or phone number, both are unique
+export const findUserByEmailOrPhone = (data: Prisma.UserWhereInput) => {
+  return prisma.user.findFirst({ where: data });
+};
+
 // create user with an account
 export const createUser = (data: Prisma.UserCreateManyInput, businessName: string) => {
   return prisma.user.create({
