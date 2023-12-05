@@ -68,7 +68,7 @@ class BusinessDetailsController {
         };
       }
 
-      const businessAcc = await findbusinessAccount({ id: userId });
+      const businessAcc = await findbusinessAccount({ userId });
 
       if (!businessAcc) {
         return {
@@ -122,7 +122,7 @@ class BusinessDetailsController {
         };
       }
 
-      const businessAcc = await findbusinessAccount({ id: userId });
+      const businessAcc = await findbusinessAccount({ userId });
 
       if (!businessAcc) {
         return {

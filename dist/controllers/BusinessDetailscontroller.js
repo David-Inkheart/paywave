@@ -15,6 +15,8 @@ class BusinessDetailsController {
                 };
             }
             const [userDetails, businessAcc] = await Promise.all([(0, db_user_1.findUser)({ id: userId }), (0, db_account_1.findbusinessAccount)({ userId })]);
+            console.log('userDetails:', userDetails);
+            console.log('businessAcc:', businessAcc);
             if (!userDetails || !businessAcc) {
                 return {
                     success: false,
@@ -47,7 +49,7 @@ class BusinessDetailsController {
                     error: error.message,
                 };
             }
-            const businessAcc = await (0, db_account_1.findbusinessAccount)({ id: userId });
+            const businessAcc = await (0, db_account_1.findbusinessAccount)({ userId });
             if (!businessAcc) {
                 return {
                     success: false,
@@ -85,7 +87,7 @@ class BusinessDetailsController {
                     error: error.message,
                 };
             }
-            const businessAcc = await (0, db_account_1.findbusinessAccount)({ id: userId });
+            const businessAcc = await (0, db_account_1.findbusinessAccount)({ userId });
             if (!businessAcc) {
                 return {
                     success: false,
