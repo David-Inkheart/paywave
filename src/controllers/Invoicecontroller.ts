@@ -1,5 +1,5 @@
 import { Item } from '@prisma/client';
-import { findbusinessAccount } from '../repositories/db.account';
+import { findbusinessAccount, getBusinessAccountWithCustomer } from '../repositories/db.account';
 import { UserId } from '../types/custom';
 import { createInvoiceSchema, invoiceIdSchema } from '../utils/validators';
 import { createInvoice, getAllInvoices, getInvoice } from '../repositories/db.invoice';
@@ -20,7 +20,7 @@ class InvoiceController {
         };
       }
 
-      const businessAccount = await findbusinessAccount({ userId });
+      const businessAccount = await getBusinessAccountWithCustomer({ userId });
 
       if (!businessAccount) {
         return {
@@ -29,7 +29,7 @@ class InvoiceController {
         };
       }
 
-      const customerDetails = await findCustomer({ id: customerId });
+      const customerDetails = businessAccount.customers.find((customer) => customer.id === customerId);
       if (!customerDetails) {
         return {
           success: false,

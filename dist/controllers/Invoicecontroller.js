@@ -20,14 +20,14 @@ class InvoiceController {
                     error: error.message,
                 };
             }
-            const businessAccount = await (0, db_account_1.findbusinessAccount)({ userId });
+            const businessAccount = await (0, db_account_1.getBusinessAccountWithCustomer)({ userId });
             if (!businessAccount) {
                 return {
                     success: false,
                     error: 'business account does not exist',
                 };
             }
-            const customerDetails = await (0, db_customer_1.findCustomer)({ id: customerId });
+            const customerDetails = businessAccount.customers.find((customer) => customer.id === customerId);
             if (!customerDetails) {
                 return {
                     success: false,

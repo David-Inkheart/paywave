@@ -9,7 +9,7 @@ const hash_1 = __importDefault(require("../utils/hash"));
 const checkTransaction_1 = __importDefault(require("../utils/transactions/checkTransaction"));
 const db_user_1 = require("../repositories/db.user");
 const validators_1 = require("../utils/validators");
-const db_customer_1 = require("../repositories/db.customer");
+// import { findCustomer } from '../repositories/db.customer';
 const db_invoice_1 = require("../repositories/db.invoice");
 const db_transactions_1 = require("../repositories/db.transactions");
 const db_account_1 = require("../repositories/db.account");
@@ -38,14 +38,7 @@ class TransactionController {
                 message: 'User does not exist',
             };
         }
-        const payer = await (0, db_customer_1.findCustomer)({ email: payerEmail });
-        if (!payer) {
-            return {
-                success: false,
-                message: 'Customer does not exist',
-            };
-        }
-        const businessAccount = await (0, db_account_1.findbusinessAccount)({ userId });
+        const businessAccount = await (0, db_account_1.getBusinessAccountWithCustomer)({ userId });
         if (!businessAccount) {
             return {
                 success: false,
@@ -53,6 +46,13 @@ class TransactionController {
             };
         }
         const { businessName } = businessAccount;
+        const payer = businessAccount.customers.find((customer) => customer.email === payerEmail);
+        if (!payer) {
+            return {
+                success: false,
+                message: 'Customer does not exist',
+            };
+        }
         // check if invoice exists
         const invoice = await (0, db_invoice_1.findInvoice)({
             id: Number(invoiceId),

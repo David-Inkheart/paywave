@@ -5,10 +5,10 @@ import hashArguments from '../utils/hash';
 import isDuplicateTxn from '../utils/transactions/checkTransaction';
 import { findUser } from '../repositories/db.user';
 import { paySchema, transactionHistorySchema } from '../utils/validators';
-import { findCustomer } from '../repositories/db.customer';
+// import { findCustomer } from '../repositories/db.customer';
 import { findInvoice } from '../repositories/db.invoice';
 import { getTransactions } from '../repositories/db.transactions';
-import { findbusinessAccount } from '../repositories/db.account';
+import { getBusinessAccountWithCustomer } from '../repositories/db.account';
 
 configDotenv();
 
@@ -42,16 +42,7 @@ class TransactionController {
       };
     }
 
-    const payer = await findCustomer({ email: payerEmail });
-
-    if (!payer) {
-      return {
-        success: false,
-        message: 'Customer does not exist',
-      };
-    }
-
-    const businessAccount = await findbusinessAccount({ userId });
+    const businessAccount = await getBusinessAccountWithCustomer({ userId });
 
     if (!businessAccount) {
       return {
@@ -62,11 +53,20 @@ class TransactionController {
 
     const { businessName } = businessAccount;
 
+    const payer = businessAccount.customers.find((customer) => customer.email === payerEmail);
+
+    if (!payer) {
+      return {
+        success: false,
+        message: 'Customer does not exist',
+      };
+    }
+
     // check if invoice exists
     const invoice = await findInvoice({
       id: Number(invoiceId),
-      customerId: payer!.id,
-      businessAccountId: businessAccount!.id,
+      customerId: payer.id,
+      businessAccountId: businessAccount.id,
       totalAmount: amount,
     });
 
