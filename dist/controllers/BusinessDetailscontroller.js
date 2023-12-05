@@ -14,7 +14,7 @@ class BusinessDetailsController {
                     error: error.message,
                 };
             }
-            const [userDetails, businessAcc] = await Promise.all([(0, db_user_1.findUser)({ id: userId }), (0, db_account_1.findbusinessAccount)({ id: userId })]);
+            const [userDetails, businessAcc] = await Promise.all([(0, db_user_1.findUser)({ id: userId }), (0, db_account_1.findbusinessAccount)({ userId })]);
             if (!userDetails || !businessAcc) {
                 return {
                     success: false,

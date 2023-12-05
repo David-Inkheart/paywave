@@ -16,7 +16,9 @@ class BusinessDetailsController {
         };
       }
 
-      const [userDetails, businessAcc] = await Promise.all([findUser({ id: userId }), findbusinessAccount({ id: userId })]);
+      const [userDetails, businessAcc] = await Promise.all([findUser({ id: userId }), findbusinessAccount({ userId })]);
+      console.log('userDetails:', userDetails);
+      console.log('businessAcc:', businessAcc);
 
       if (!userDetails || !businessAcc) {
         return {
