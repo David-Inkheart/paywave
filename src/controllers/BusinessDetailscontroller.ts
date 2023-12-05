@@ -8,7 +8,6 @@ class BusinessDetailsController {
   static async getBusinessDetails(userId: UserId) {
     try {
       const { error } = idSchema.validate(userId);
-      console.log('userId:', userId);
       if (error) {
         return {
           success: false,
@@ -17,8 +16,6 @@ class BusinessDetailsController {
       }
 
       const [userDetails, businessAcc] = await Promise.all([findUser({ id: userId }), findbusinessAccount({ userId })]);
-      console.log('userDetails:', userDetails);
-      console.log('businessAcc:', businessAcc);
 
       if (!userDetails || !businessAcc) {
         return {
