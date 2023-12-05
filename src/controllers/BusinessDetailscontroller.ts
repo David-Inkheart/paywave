@@ -2,11 +2,20 @@ import { Country } from '@prisma/client';
 import { findbusinessAccount, updatebusinessAccount } from '../repositories/db.account';
 import { findUser } from '../repositories/db.user';
 import { UserId } from '../types/custom';
-import { businessDetailsSchema, paymentDetailsSchema } from '../utils/validators';
+import { businessDetailsSchema, idSchema, paymentDetailsSchema } from '../utils/validators';
 
 class BusinessDetailsController {
   static async getBusinessDetails(userId: UserId) {
     try {
+      const { error } = idSchema.validate(userId);
+      console.log('userId:', userId);
+      if (error) {
+        return {
+          success: false,
+          error: error.message,
+        };
+      }
+
       const [userDetails, businessAcc] = await Promise.all([findUser({ id: userId }), findbusinessAccount({ id: userId })]);
 
       if (!userDetails || !businessAcc) {
