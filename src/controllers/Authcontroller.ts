@@ -68,7 +68,7 @@ class AuthController {
 
     // generate jwt Token
     const token = jwt.sign({ userId: newUser.id }, process.env.JWT_SECRET!, {
-      expiresIn: '1h',
+      expiresIn: '24h',
     });
 
     // send welcome email
@@ -113,9 +113,9 @@ class AuthController {
         error: 'Email/password mismatch',
       };
     }
-    // Generate JWT token that expires in 1 hour
+    // Generate JWT token that expires in 24 hour
     const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET!, {
-      expiresIn: '1h',
+      expiresIn: '24h',
     });
 
     // find businessAccount
