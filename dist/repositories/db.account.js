@@ -3,13 +3,22 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.creditbusinessAccount = exports.debitbusinessAccount = exports.updatebusinessAccount = exports.findbusinessAccountbyUserId = exports.findbusinessAccount = void 0;
+exports.creditbusinessAccount = exports.debitbusinessAccount = exports.updatebusinessAccount = exports.findbusinessAccountbyUserId = exports.getBusinessAccountWithCustomer = exports.findbusinessAccount = void 0;
 const client_1 = require("@prisma/client");
 const db_server_1 = __importDefault(require("../utils/db.server"));
 const findbusinessAccount = (data) => {
     return db_server_1.default.businessAccount.findFirst({ where: data });
 };
 exports.findbusinessAccount = findbusinessAccount;
+const getBusinessAccountWithCustomer = (data) => {
+    return db_server_1.default.businessAccount.findFirst({
+        where: data,
+        include: {
+            customers: true,
+        },
+    });
+};
+exports.getBusinessAccountWithCustomer = getBusinessAccountWithCustomer;
 const findbusinessAccountbyUserId = (userId, txn) => {
     return txn
         ? txn.$queryRaw(client_1.Prisma.sql `SELECT * FROM "public"."BusinessAccount" WHERE "userId" = ${userId} FOR UPDATE;`)

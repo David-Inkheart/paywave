@@ -1,5 +1,5 @@
-import { findbusinessAccount } from '../repositories/db.account';
-import { createCustomer, deleteCustomer, findCustomer, getBusinessCustomers, updateCustomer } from '../repositories/db.customer';
+import { getBusinessAccountWithCustomer } from '../repositories/db.account';
+import { createCustomer, deleteCustomer, updateCustomer } from '../repositories/db.customer';
 import { UserId } from '../types/custom';
 import { customerDetailSchema, customerEmailSchema } from '../utils/validators';
 
@@ -15,12 +15,19 @@ class CustomerController {
         };
       }
 
-      const businessAccount = await findbusinessAccount({ userId });
+      const businessAccount = await getBusinessAccountWithCustomer({ userId });
 
       if (!businessAccount) {
         return {
           success: false,
           error: 'business account does not exist',
+        };
+      }
+
+      if (businessAccount.customers.some((customer) => customer.email === customerEmail)) {
+        return {
+          success: false,
+          error: 'Customer already exists',
         };
       }
 
@@ -46,7 +53,7 @@ class CustomerController {
     }
   }
 
-  static async updateCustomer({ customerName, customerEmail }: { customerName: string; customerEmail: string }) {
+  static async updateCustomer({ userId, customerName, customerEmail }: { userId: UserId; customerName: string; customerEmail: string }) {
     try {
       const { error } = customerDetailSchema.validate({ customerName, customerEmail });
 
@@ -57,8 +64,25 @@ class CustomerController {
         };
       }
 
-      const customer = await findCustomer({ email: customerEmail });
+      // const customer = await findCustomer({ email: customerEmail });
 
+      // if (!customer) {
+      //   return {
+      //     success: false,
+      //     error: 'Customer does not exist',
+      //   };
+      // }
+
+      const businessAccWithCustomer = await getBusinessAccountWithCustomer({ userId });
+
+      if (!businessAccWithCustomer) {
+        return {
+          success: false,
+          error: 'business account does not exist',
+        };
+      }
+
+      const customer = businessAccWithCustomer.customers.find((cust) => cust.email === customerEmail);
       if (!customer) {
         return {
           success: false,
@@ -66,7 +90,7 @@ class CustomerController {
         };
       }
 
-      await updateCustomer({ email: customerEmail }, { name: customerName });
+      await updateCustomer({ id: customer.id }, { name: customerName, email: customerEmail });
 
       return {
         success: true,
@@ -80,7 +104,7 @@ class CustomerController {
     }
   }
 
-  static async deleteCustomer(customerEmail: string) {
+  static async deleteCustomer({ userId, customerEmail }: { userId: UserId; customerEmail: string }) {
     try {
       const { error } = customerEmailSchema.validate({ customerEmail });
 
@@ -91,8 +115,16 @@ class CustomerController {
         };
       }
 
-      const customer = await findCustomer({ email: customerEmail });
+      const businessAccount = await getBusinessAccountWithCustomer({ userId });
 
+      if (!businessAccount) {
+        return {
+          success: false,
+          error: 'business account does not exist',
+        };
+      }
+
+      const customer = businessAccount.customers.find((cust) => cust.email === customerEmail);
       if (!customer) {
         return {
           success: false,
@@ -100,7 +132,7 @@ class CustomerController {
         };
       }
 
-      await deleteCustomer({ email: customerEmail });
+      await deleteCustomer({ id: customer.id });
 
       return {
         success: true,
@@ -114,7 +146,7 @@ class CustomerController {
     }
   }
 
-  static async getCustomer(customerEmail: string) {
+  static async getCustomer({ userId, customerEmail }: { userId: UserId; customerEmail: string }) {
     try {
       const { error } = customerEmailSchema.validate({ customerEmail });
 
@@ -125,7 +157,16 @@ class CustomerController {
         };
       }
 
-      const customer = await findCustomer({ email: customerEmail });
+      const businessAccount = await getBusinessAccountWithCustomer({ userId });
+
+      if (!businessAccount) {
+        return {
+          success: false,
+          error: 'business account does not exist',
+        };
+      }
+
+      const customer = businessAccount.customers.find((cust) => cust.email === customerEmail);
 
       if (!customer) {
         return {
@@ -148,7 +189,7 @@ class CustomerController {
 
   static async getCustomers(userId: UserId) {
     try {
-      const businessAccount = await findbusinessAccount({ userId });
+      const businessAccount = await getBusinessAccountWithCustomer({ userId });
 
       if (!businessAccount) {
         return {
@@ -157,7 +198,7 @@ class CustomerController {
         };
       }
 
-      const customers = await getBusinessCustomers(businessAccount.id);
+      const { customers } = businessAccount;
 
       return {
         success: true,

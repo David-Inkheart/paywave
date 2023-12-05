@@ -4,9 +4,10 @@ import CustomerController from '../../controllers/Customercontrollers';
 
 export const getCustomerHandler: RequestHandler = async (req, res) => {
   try {
+    const userId = req.userId as UserId;
     const customerEmail = req.body.customerEmail as string;
 
-    const response = await CustomerController.getCustomer(customerEmail);
+    const response = await CustomerController.getCustomer({ userId, customerEmail });
 
     if (!response.success) {
       if (response.error?.includes('Could not')) {
@@ -78,9 +79,10 @@ export const getAllCustomersHandler: RequestHandler = async (req, res) => {
 
 export const deleteCustomerHandler: RequestHandler = async (req, res) => {
   try {
+    const userId = req.userId as UserId;
     const customerEmail = req.body.customerEmail as string;
 
-    const response = await CustomerController.deleteCustomer(customerEmail);
+    const response = await CustomerController.deleteCustomer({ userId, customerEmail });
 
     if (!response.success) {
       if (response.error?.includes('Could not')) {
@@ -115,9 +117,10 @@ export const deleteCustomerHandler: RequestHandler = async (req, res) => {
 
 export const updateCustomerHandler: RequestHandler = async (req, res) => {
   try {
+    const userId = req.userId as UserId;
     const { customerEmail, customerName } = req.body;
 
-    const response = await CustomerController.updateCustomer({ customerEmail, customerName });
+    const response = await CustomerController.updateCustomer({ customerEmail, customerName, userId });
 
     if (!response.success) {
       if (response.error?.includes('Could not')) {

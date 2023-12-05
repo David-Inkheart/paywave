@@ -5,6 +5,15 @@ export const findbusinessAccount = (data: Prisma.BusinessAccountWhereInput) => {
   return prisma.businessAccount.findFirst({ where: data });
 };
 
+export const getBusinessAccountWithCustomer = (data: Prisma.BusinessAccountWhereInput) => {
+  return prisma.businessAccount.findFirst({
+    where: data,
+    include: {
+      customers: true,
+    },
+  });
+};
+
 export const findbusinessAccountbyUserId = (userId: number, txn?: Prisma.TransactionClient) => {
   return txn
     ? txn.$queryRaw<BusinessAccount[]>(Prisma.sql`SELECT * FROM "public"."BusinessAccount" WHERE "userId" = ${userId} FOR UPDATE;`)

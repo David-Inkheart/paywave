@@ -7,8 +7,9 @@ exports.createCustomerHandler = exports.updateCustomerHandler = exports.deleteCu
 const Customercontrollers_1 = __importDefault(require("../../controllers/Customercontrollers"));
 const getCustomerHandler = async (req, res) => {
     try {
+        const userId = req.userId;
         const customerEmail = req.body.customerEmail;
-        const response = await Customercontrollers_1.default.getCustomer(customerEmail);
+        const response = await Customercontrollers_1.default.getCustomer({ userId, customerEmail });
         if (!response.success) {
             if (response.error?.includes('Could not')) {
                 return res.status(500).json({
@@ -77,8 +78,9 @@ const getAllCustomersHandler = async (req, res) => {
 exports.getAllCustomersHandler = getAllCustomersHandler;
 const deleteCustomerHandler = async (req, res) => {
     try {
+        const userId = req.userId;
         const customerEmail = req.body.customerEmail;
-        const response = await Customercontrollers_1.default.deleteCustomer(customerEmail);
+        const response = await Customercontrollers_1.default.deleteCustomer({ userId, customerEmail });
         if (!response.success) {
             if (response.error?.includes('Could not')) {
                 return res.status(500).json({
@@ -112,8 +114,9 @@ const deleteCustomerHandler = async (req, res) => {
 exports.deleteCustomerHandler = deleteCustomerHandler;
 const updateCustomerHandler = async (req, res) => {
     try {
+        const userId = req.userId;
         const { customerEmail, customerName } = req.body;
-        const response = await Customercontrollers_1.default.updateCustomer({ customerEmail, customerName });
+        const response = await Customercontrollers_1.default.updateCustomer({ customerEmail, customerName, userId });
         if (!response.success) {
             if (response.error?.includes('Could not')) {
                 return res.status(500).json({

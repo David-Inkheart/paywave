@@ -9,16 +9,19 @@ const createCustomer = (data) => {
     return db_server_1.default.customer.create({ data });
 };
 exports.createCustomer = createCustomer;
-const findCustomer = (email) => {
-    return db_server_1.default.customer.findUnique({ where: email });
+const findCustomer = (data) => {
+    return db_server_1.default.customer.findFirst({ where: data });
 };
 exports.findCustomer = findCustomer;
-const updateCustomer = (email, data) => {
-    return db_server_1.default.customer.update({ where: email, data });
+const updateCustomer = (id, data) => {
+    return db_server_1.default.customer.update({
+        where: id,
+        data,
+    });
 };
 exports.updateCustomer = updateCustomer;
-const deleteCustomer = (email) => {
-    return db_server_1.default.customer.delete({ where: email });
+const deleteCustomer = (id) => {
+    return db_server_1.default.customer.delete({ where: id });
 };
 exports.deleteCustomer = deleteCustomer;
 const getBusinessCustomers = (businessAccountId) => {
