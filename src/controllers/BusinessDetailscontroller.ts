@@ -65,6 +65,17 @@ class BusinessDetailsController {
           error: 'business account does not exist',
         };
       }
+
+      if (businessAcc.businessName !== businessName) {
+        const businessNameExists = await findbusinessAccount({ businessName });
+
+        if (businessNameExists) {
+          return {
+            success: false,
+            error: 'business name already exists',
+          };
+        }
+      }
       await updatebusinessAccount(businessAcc.id, { streetAddress, city, businessName, country });
 
       return {
@@ -107,6 +118,17 @@ class BusinessDetailsController {
           success: false,
           error: 'business account does not exist',
         };
+      }
+
+      if (businessAcc.accountNumber !== accountNumber) {
+        const accountNumberExists = await findbusinessAccount({ accountNumber });
+
+        if (accountNumberExists) {
+          return {
+            success: false,
+            error: 'account number already exists',
+          };
+        }
       }
 
       await updatebusinessAccount(businessAcc.id, { bankCode, accountNumber, accountName });
