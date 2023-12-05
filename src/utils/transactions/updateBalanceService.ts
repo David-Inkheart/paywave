@@ -1,5 +1,4 @@
-import { creditbusinessAccount, findbusinessAccountbyUserId } from '../../repositories/db.account';
-import { findCustomer } from '../../repositories/db.customer';
+import { creditbusinessAccount, getBusinessAccountWithCustomer } from '../../repositories/db.account';
 import { updateInvoice } from '../../repositories/db.invoice';
 import { recordTransaction } from '../../repositories/db.transactions';
 import { findUser } from '../../repositories/db.user';
@@ -18,20 +17,23 @@ async function updateBalance(event: any) {
 
     const [payerEmail, invoiceId] = payerDetails.split(':');
 
-    // find customer with email
-    const payer = await findCustomer({ email: payerEmail });
+    // find customer with user business account
 
-    const businessAccount = await findbusinessAccountbyUserId(user!.id);
+    const businessAccount = await getBusinessAccountWithCustomer({ userId: user!.id });
+
+    if (!businessAccount) throw new Error('business account not found');
+
+    const payer = businessAccount.customers.find((customer) => customer.email === payerEmail);
 
     await prisma.$transaction(async (tx) => {
       // credit business account
-      await creditbusinessAccount({ amount, businessAccountId: businessAccount[0].id, txn: tx });
+      await creditbusinessAccount({ amount, businessAccountId: businessAccount.id, txn: tx });
 
       // update invoice
       const invoice = await updateInvoice({
         invoiceId: Number(invoiceId),
         customerId: payer!.id,
-        businessAccountId: businessAccount[0].id,
+        businessAccountId: businessAccount.id,
         totalAmount: amount,
         paymentStatus: 'PAID',
         reference,
@@ -48,7 +50,7 @@ async function updateBalance(event: any) {
           amount,
           reference,
           transactionType: 'card',
-          businessAccountId: businessAccount[0].id,
+          businessAccountId: businessAccount.id,
           metadata,
         },
         tx,
@@ -56,7 +58,7 @@ async function updateBalance(event: any) {
     });
 
     // send email to customer and business owner
-    const { businessName } = businessAccount[0];
+    const { businessName } = businessAccount;
 
     await Promise.all([
       sendEmail({

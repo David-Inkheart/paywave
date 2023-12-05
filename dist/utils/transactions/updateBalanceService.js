@@ -4,7 +4,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const db_account_1 = require("../../repositories/db.account");
-const db_customer_1 = require("../../repositories/db.customer");
 const db_invoice_1 = require("../../repositories/db.invoice");
 const db_transactions_1 = require("../../repositories/db.transactions");
 const db_user_1 = require("../../repositories/db.user");
@@ -19,17 +18,19 @@ async function updateBalance(event) {
         const user = await (0, db_user_1.findUser)({ email });
         const payerDetails = metadata.payerDetails;
         const [payerEmail, invoiceId] = payerDetails.split(':');
-        // find customer with email
-        const payer = await (0, db_customer_1.findCustomer)({ email: payerEmail });
-        const businessAccount = await (0, db_account_1.findbusinessAccountbyUserId)(user.id);
+        // find customer with user business account
+        const businessAccount = await (0, db_account_1.getBusinessAccountWithCustomer)({ userId: user.id });
+        if (!businessAccount)
+            throw new Error('business account not found');
+        const payer = businessAccount.customers.find((customer) => customer.email === payerEmail);
         await db_server_1.default.$transaction(async (tx) => {
             // credit business account
-            await (0, db_account_1.creditbusinessAccount)({ amount, businessAccountId: businessAccount[0].id, txn: tx });
+            await (0, db_account_1.creditbusinessAccount)({ amount, businessAccountId: businessAccount.id, txn: tx });
             // update invoice
             const invoice = await (0, db_invoice_1.updateInvoice)({
                 invoiceId: Number(invoiceId),
                 customerId: payer.id,
-                businessAccountId: businessAccount[0].id,
+                businessAccountId: businessAccount.id,
                 totalAmount: amount,
                 paymentStatus: 'PAID',
                 reference,
@@ -44,12 +45,12 @@ async function updateBalance(event) {
                 amount,
                 reference,
                 transactionType: 'card',
-                businessAccountId: businessAccount[0].id,
+                businessAccountId: businessAccount.id,
                 metadata,
             }, tx);
         });
         // send email to customer and business owner
-        const { businessName } = businessAccount[0];
+        const { businessName } = businessAccount;
         await Promise.all([
             (0, email_1.sendEmail)({
                 recipientEmail: payerEmail,
