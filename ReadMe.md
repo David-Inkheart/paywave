@@ -59,6 +59,10 @@ Detailed API documentation is available. Please mail me to request access to the
 - Regularly update dependencies to address security vulnerabilities.
 - Adhere to best practices for authentication and authorization.
 
+## Unit Testing
+
+- Unit tests are written with Jest and are quite comprehensive.
+
 ## Contributing
 
 We welcome contributions to enhance the paywave Backend Service. To contribute:
